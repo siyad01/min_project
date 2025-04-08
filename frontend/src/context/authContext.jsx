@@ -26,7 +26,7 @@ export const AuthProvider = ({children}) => {
             setIsAuth(true);
             setLoading(false);
             localStorage.setItem("authToken", data.token);
-
+            window.location.reload();
             return data;
         } catch (error) {
             // Detailed error logging
@@ -61,7 +61,7 @@ export const AuthProvider = ({children}) => {
             setIsAuth(true);
             setLoading(false);
             localStorage.setItem("authToken", data.token);
-
+            window.location.reload();
             return data;
         } catch (error) {
             toast.error(error.response?.data?.message || "Registration failed");
