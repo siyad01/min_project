@@ -90,19 +90,19 @@ const StudentDash = ({ user }) => {
   };
   useEffect(() => {
     if (isAuth) {
-      fetchStudentDues(user._id);
-      fetchAllMyCertRequests(user._id);
+      fetchStudentDues(user?._id);
+      fetchAllMyCertRequests(user?._id);
     }
-  }, [isAuth, user._id]);
+  }, [isAuth, user?._id]);
 
   const handleCashPaymentRequest = async (due) => {
     try {
       const response = await requestCashPayment(due?._id);
       if (response) {
         setCashPaymentDetails({
-          amount: due.amount,
-          message: response.message,
-          officeStaff: response.officeStaff,
+          amount: due?.amount,
+          message: response?.message,
+          officeStaff: response?.officeStaff,
         });
         setSelectedDue(due);
       }
@@ -114,14 +114,14 @@ const StudentDash = ({ user }) => {
   const formData = new FormData();
   const handleRequestCertificate = async (e) => {
     e.preventDefault();
-    formData.append("studentId", userData._id);
+    formData.append("studentId", userData?._id);
     formData.append("purpose", purpose);
 
     await createCertificate(formData);
     setShowCertificateModal(false);
     setPurpose("")
 
-    fetchAllMyCertRequests(userData._id);
+    fetchAllMyCertRequests(userData?._id);
 
   };
 
@@ -133,20 +133,20 @@ const StudentDash = ({ user }) => {
   };
 
   const studentProfile = {
-    name: `${userData.firstName} ${userData.lastName}`,
-    email: userData.email,
-    department: userData.department,
-    semester: userData.semester,
-    admissionNo: userData.admissionNo,
-    contactNo: userData.phone,
+    name: `${userData?.firstName} ${userData?.lastName}`,
+    email: userData?.email,
+    department: userData?.department,
+    semester: userData?.semester,
+    admissionNo: userData?.admissionNo,
+    contactNo: userData?.phone,
   };
 
   const [editedProfile, setEditedProfile] = useState({
-    firstName: userData.firstName,
-    lastName: userData.lastName,
-    email: userData.email,
-    phone: userData.phone,
-    semester: userData.semester,
+    firstName: userData?.firstName,
+    lastName: userData?.lastName,
+    email: userData?.email,
+    phone: userData?.phone,
+    semester: userData?.semester,
   });
 
   const handleProfileUpdate = async (e) => {
@@ -165,6 +165,7 @@ const StudentDash = ({ user }) => {
       
       // Fetch updated student details
       await fetchStudentDetails();
+      window.location.reload();
       
       setIsEditing(false);
     } catch (error) {
@@ -239,13 +240,13 @@ const StudentDash = ({ user }) => {
               Student Dashboard
             </h1>
             <p className="text-white/60 mt-2 text-xl md:text-2xl">
-              Welcome back, {userData.firstName}
+              Welcome back, {userData?.firstName}
             </p>
           </div>
           <div className="flex items-center space-x-2 mt-4 md:mt-0">
             <FaUserGraduate className="text-2xl text-indigo-400" />
             <span className="text-md md:text-lg bg-white/10 px-3 py-1 rounded-full">
-              {userData.department} - Sem {userData.semester}
+              {userData?.department} - Sem {userData?.semester}
             </span>
           </div>
         </motion.div>

@@ -285,7 +285,7 @@ const OfficeDash = ({ user }) => {
           <div className="flex items-center space-x-2 mt-4 md:mt-0">
             <FaCertificate className="text-2xl text-indigo-400" />
             <span className="text-md md:text-lg bg-white/10 px-3 py-1 rounded-full">
-              {user.department}
+              {user?.department}
             </span>
           </div>
         </motion.div>
@@ -352,7 +352,7 @@ const OfficeDash = ({ user }) => {
                   <tbody>
                     {certificateRequests.map((request) => (
                       <tr
-                        key={request._id}
+                        key={request?._id}
                         className="border-b border-white/10 hover:bg-white/5"
                       >
                         <td className="p-3">{request?.studentId?.firstName} {request?.studentId?.lastName}</td>
@@ -441,7 +441,7 @@ const OfficeDash = ({ user }) => {
                   {dues.length > 0 ? (
                     dues.map((due, index) => (
                       <motion.div
-                        key={due._id || index}
+                        key={due?._id || index}
                         custom={index}
                         variants={fadeUpVariants}
                         initial="hidden"
@@ -450,26 +450,26 @@ const OfficeDash = ({ user }) => {
                       >
                         <div className="text-md md:text-lg">
                           <span className="font-medium text-white">
-                            {due.studentName}
+                            {due?.studentName}
                           </span>
                           <span className="block text-md md:text-lg text-white/60">
-                            {due.department} - {due.description}
+                            {due?.department} - {due?.description}
                           </span>
                         </div>
                         <div className="flex items-center space-x-2 text-md md:text-lg">
                           <span className="font-bold text-white ">
-                            ₹{due.amount}
+                            ₹{due?.amount}
                           </span>
                           <span
                             className={`px-2 py-1 rounded-full  ${getStatusColor(
-                              due.status
+                              due?.status
                             )}`}
                           >
-                            {due.status}
+                            {due?.status}
                           </span>
-                          {due.status !== "Paid" && (
+                          {due?.status !== "Paid" && (
                             <button
-                              onClick={() => handleSetDueStatus(due._id)}
+                              onClick={() => handleSetDueStatus(due?._id)}
                               className="ml-2 px-3 py-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition"
                             >
                               Mark as Paid

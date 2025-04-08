@@ -231,20 +231,20 @@ const AdminPage = () => {
                     <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
                       <p className="text-md md:text-lg text-white/70 mb-2">Total Requests</p>
                       <p className="text-3xl md:text-4xl font-bold text-indigo-400">
-                        {analytics.totalCertificateRequests}
+                        {analytics?.totalCertificateRequests}
                       </p>
                     </div>
                     <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
                       <p className="text-md md:text-lg text-white/70 mb-2">Approved</p>
                       <p className="text-3xl md:text-4xl font-bold text-emerald-400">
-                        {analytics.approvedRequests}
+                        {analytics?.approvedRequests}
                         <FaCheckCircle className="inline-block ml-2 text-base" />
                       </p>
                     </div>
                     <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
                       <p className="text-md md:text-lg text-white/70 mb-2">Rejected</p>
                       <p className="text-3xl md:text-4xl font-bold text-rose-400">
-                        {analytics.rejectedRequests}
+                        {analytics?.rejectedRequests}
                         <FaTimesCircle className="inline-block ml-2 text-base" />
                       </p>
                     </div>
@@ -264,9 +264,9 @@ const AdminPage = () => {
                     <FaTimesCircle className="text-rose-400" />
                   </div>
                   
-                  {analytics.rejectionReasons && Object.keys(analytics.rejectionReasons).length > 0 ? (
+                  {analytics?.rejectionReasons && Object.keys(analytics?.rejectionReasons).length > 0 ? (
                     <ul className="space-y-3">
-                      {Object.entries(analytics.rejectionReasons).map(([reason, count], index) => (
+                      {Object.entries(analytics?.rejectionReasons).map(([reason, count], index) => (
                         <motion.li 
                           key={reason}
                           custom={index}
@@ -302,19 +302,19 @@ const AdminPage = () => {
                     <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
                       <p className="text-md md:text-lg text-white/70 mb-2">Total Users</p>
                       <p className="text-3xl md:text-4xl font-bold text-cyan-400">
-                        {systemAnalytics.users.total}
+                        {systemAnalytics?.users?.total}
                       </p>
                     </div>
                     <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
                       <p className="text-md md:text-lg text-white/70 mb-2">Students</p>
                       <p className="text-3xl md:text-4xl font-bold text-emerald-400">
-                        {systemAnalytics.users.students}
+                        {systemAnalytics?.users?.students}
                       </p>
                     </div>
                     <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
                       <p className="text-md md:text-lg text-white/70 mb-2">Staff</p>
                       <p className="text-3xl md:text-4xl font-bold text-indigo-400">
-                        {systemAnalytics.users.officeStaff}
+                        {systemAnalytics?.users?.officeStaff}
                       </p>
                     </div>
                   </div>
@@ -337,20 +337,20 @@ const AdminPage = () => {
                     <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
                       <p className="text-md md:text-lg text-white/70 mb-2">Total Dues</p>
                       <p className="text-3xl md:text-4xl font-bold text-cyan-400">
-                        {systemAnalytics.dues.total}
+                        {systemAnalytics?.dues?.total}
                       </p>
                     </div>
                     <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
                       <p className="text-md md:text-lg text-white/70 mb-2">Cleared</p>
                       <p className="text-3xl md:text-4xl font-bold text-emerald-400">
-                        {systemAnalytics.dues.cleared}
+                        {systemAnalytics?.dues?.cleared}
                         <FaCheckCircle className="inline-block ml-2 text-base" />
                       </p>
                     </div>
                     <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
                       <p className="text-md md:text-lg text-white/70 mb-2">Pending</p>
                       <p className="text-3xl md:text-4xl font-bold text-amber-400">
-                        {systemAnalytics.dues.pending}
+                        {systemAnalytics?.dues?.pending}
                         <FaTimesCircle className="inline-block ml-2 text-base" />
                       </p>
                     </div>
@@ -360,13 +360,13 @@ const AdminPage = () => {
                     <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
                       <p className="text-md md:text-lg text-white/70 mb-2">Cleared Amount</p>
                       <p className="text-2xl md:text-3xl font-bold text-emerald-400">
-                        ₹{systemAnalytics.dues.clearedAmount.toLocaleString()}
+                        ₹{systemAnalytics?.dues?.clearedAmount?.toLocaleString()}
                       </p>
                     </div>
                     <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
                       <p className="text-md md:text-lg text-white/70 mb-2">Pending Amount</p>
                       <p className="text-2xl md:text-3xl font-bold text-amber-400">
-                        ₹{systemAnalytics.dues.pendingAmount.toLocaleString()}
+                        ₹{systemAnalytics?.dues?.pendingAmount?.toLocaleString()}
                       </p>
                     </div>
                   </div>
