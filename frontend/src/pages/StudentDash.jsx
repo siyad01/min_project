@@ -98,12 +98,6 @@ const StudentDash = ({ user }) => {
       },
     }),
   };
-  useEffect(() => {
-    if (isAuth) {
-      fetchStudentDues(user?._id);
-      fetchAllMyCertRequests(user?._id);
-    }
-  }, [isAuth, user?._id]);
 
   const handleCashPaymentRequest = async (due) => {
     try {
@@ -189,7 +183,7 @@ const StudentDash = ({ user }) => {
       setIsEditing(false);
 
       // Fetch updated student details
-      await fetchStudentDetails();
+      await fetchStudentDetails(user?.id);
       window.location.reload();
     } catch (error) {
       console.error("Profile update failed", error);
@@ -244,6 +238,13 @@ const StudentDash = ({ user }) => {
       );
     }
   };
+
+  useEffect(() => {
+    if (isAuth) {
+      fetchStudentDues(user?._id);
+      fetchAllMyCertRequests(user?._id);
+    }
+  }, [isAuth, user?._id]);
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-[#090909] text-white px-4 sm:px-8 py-8">

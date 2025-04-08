@@ -248,7 +248,7 @@ export const updateStudentProfile = TryCatch(async (req, res) => {
 });
 
 export const fetchStudentDetails = TryCatch(async (req, res) => {
-  const studentId = req.user._id;
+  const studentId = req.params;
 
   const student = await Student.findById(studentId).select(
     '-password -__v'  // Exclude sensitive fields
@@ -315,7 +315,7 @@ export const updateOfficerProfile = TryCatch(async (req, res) => {
 });
 
 export const fetchOfficerDetails = TryCatch(async (req, res) => {
-  const officerId = req.user._id;
+  const officerId = req.params;
 
   const officer = await Officer.findById(officerId).select(
     '-password -__v'  // Exclude sensitive fields

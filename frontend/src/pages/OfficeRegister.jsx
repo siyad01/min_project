@@ -76,7 +76,7 @@ const OfficeRegister = () => {
 
       // Call registerOfficer function
       await registerOfficer(formData);
-
+      window.location.reload();
       // Show success toast and navigate to login
     } catch (error) {
       console.error("Office Registration error", error);

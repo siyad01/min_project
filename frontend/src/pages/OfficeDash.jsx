@@ -101,7 +101,7 @@ const OfficeDash = ({ user }) => {
 
       setIsEditing(false);
       // Fetch updated officer details
-      await fetchOfficerDetails();
+      await fetchOfficerDetails(user?._id);
       window.location.reload();
     } catch (error) {
       console.error("Profile update failed", error);

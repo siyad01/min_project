@@ -55,7 +55,7 @@ const Login = () => {
       }
 
       await loginFunction(email, password);
-      
+      window.location.reload();
       // Navigate based on user type
       switch (userType) {
         case "student":

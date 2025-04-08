@@ -27,9 +27,9 @@ router.post("/login-admin", login);
 router.post("/logout", logout);
 
 router.put("/update-student-profile", isAuth, updateStudentProfile);
-router.get("/student-details", isAuth, fetchStudentDetails);
+router.get("/student-details/:studentId", isAuth, fetchStudentDetails);
 
 router.put("/update-officer-profile", isAuth, updateOfficerProfile);
-router.get("/officer-details", isAuth, fetchOfficerDetails);
+router.get("/officer-details/:officerId", isAuth, fetchOfficerDetails);
 
 export default router;

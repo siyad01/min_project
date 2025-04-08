@@ -87,6 +87,7 @@ const StudentRegister = () => {
 
       await registerStudent(formData);
       toast.success("Registration successful!");
+      window.location.reload();
     } catch (error) {
       toast.error(error.response?.data?.message || "Registration failed");
     } finally {

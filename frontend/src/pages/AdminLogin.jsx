@@ -41,6 +41,7 @@ const AdminLogin = () => {
     try {
       await loginAdmin(email, password);
       navigate("/admin-dash");
+      window.location.reload();
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Login failed. Please try again."
