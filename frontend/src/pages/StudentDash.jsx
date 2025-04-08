@@ -177,12 +177,12 @@ const StudentDash = ({ user }) => {
 
     try {
       await updateStudentProfile(formData);
-      
+      setIsEditing(false);
+
       // Fetch updated student details
       await fetchStudentDetails();
       window.location.reload();
       
-      setIsEditing(false);
     } catch (error) {
       console.error("Profile update failed", error);
     }
