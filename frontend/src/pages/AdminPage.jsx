@@ -163,7 +163,7 @@ const AdminPage = () => {
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.03] via-transparent to-rose-500/[0.03] blur-[100px]" />
       
-      <div className="relative z-10 container mx-auto">
+      <div className="relative z-10 container mx-auto mt-22">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
