@@ -260,7 +260,7 @@ const OfficeDash = ({ user }) => {
       fetchAllDues();
       fetchCertificates();
     }
-  }, [isAuth]);
+  }, [isAuth,user?._id]);
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-[#090909] text-white px-4 sm:px-8 py-8">
