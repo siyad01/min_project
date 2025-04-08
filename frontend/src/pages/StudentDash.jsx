@@ -70,8 +70,9 @@ const StudentDash = ({ user }) => {
   const [cashPaymentDetails, setCashPaymentDetails] = useState(null);
   const [purpose, setPurpose] = useState("");
   const [selectedCertificate, setSelectedCertificate] = useState(null);
-
   const [showCertificateModal, setShowCertificateModal] = useState(false);
+  const [certificateLoading, setCertificateLoading] = useState(false);
+  const [certificateError, setCertificateError] = useState(null);
 
   const { updateStudentProfile, fetchStudentDetails, loading: authLoading, isAuth, user: userData } = UserData();
   const { dues, fetchStudentDues, loading, requestCashPayment } = DueData();
@@ -111,18 +112,32 @@ const StudentDash = ({ user }) => {
     }
   };
 
-  const formData = new FormData();
   const handleRequestCertificate = async (e) => {
     e.preventDefault();
-    formData.append("studentId", userData?._id);
-    formData.append("purpose", purpose);
+    setCertificateLoading(true);
+    setCertificateError(null);
 
-    await createCertificate(formData);
-    setShowCertificateModal(false);
-    setPurpose("")
+    try {
+      const certificateFormData = new FormData();
+      certificateFormData.append("studentId", userData?._id);
+      certificateFormData.append("purpose", purpose);
 
-    fetchAllMyCertRequests(userData?._id);
-
+      await createCertificate(certificateFormData);
+      
+      setShowCertificateModal(false);
+      setPurpose("");
+      
+      // Refresh certificate requests
+      await fetchAllMyCertRequests(userData?._id);
+    } catch (error) {
+      console.error("Certificate request failed", error);
+      setCertificateError(
+        error.response?.data?.message || 
+        "Failed to submit certificate request. Please try again."
+      );
+    } finally {
+      setCertificateLoading(false);
+    }
   };
 
   const buttonHoverVariants = {
@@ -715,26 +730,35 @@ const StudentDash = ({ user }) => {
               </motion.div>
             </div>
 
+            {certificateError && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-red-500/10 p-4 rounded-xl border border-red-500/20 mb-4"
+              >
+                <p className="text-red-300 text-center">{certificateError}</p>
+              </motion.div>
+            )}
+
             <motion.div
               className="mt-6 flex justify-center space-x-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-
               <button
                 onClick={handleRequestCertificate}
-                disabled={!purpose || loading}
+                disabled={!purpose || certificateLoading}
                 className={`
                   px-6 py-2 rounded-lg transition-all 
                   ${
-                    purpose && !loading
+                    purpose && !certificateLoading
                       ? "bg-gradient-to-r from-indigo-600/70 to-indigo-800/60 text-white hover:opacity-90"
                       : "bg-white/10 text-white/50 cursor-not-allowed"
                   }
                 `}
               >
-                {loading ? (
+                {certificateLoading ? (
                   <Loading size="sm" className="mx-auto" />
                 ) : (
                   "Request Certificate"

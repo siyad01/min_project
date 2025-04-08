@@ -420,24 +420,23 @@ const OfficeDash = ({ user }) => {
             transition={{ duration: 0.5 }}
             className="bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10 shadow-xl overflow-hidden mb-8"
           >
-            <div className="p-6 md:p-8">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl md:text-3xl font-semibold text-white">
+            <div className="p-4 sm:p-6 md:p-8">
+              <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white mb-3 sm:mb-0">
                   Dues Management
                 </h2>
                 <motion.button
                   onClick={() => setNewDueModalOpen(true)}
                   whileHover="hover"
                   variants={buttonHoverVariants}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600/70 to-indigo-800/60 text-white font-medium flex items-center gap-2 text-md md:text-lg"
+                  className="px-3 py-2 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-indigo-600/70 to-indigo-800/60 text-white font-medium flex items-center gap-2 text-sm sm:text-md"
                 >
-                  <FaPlus size={14} /> Add New Due
+                  <FaPlus size={12} className="sm:mr-1" /> Add New Due
                 </motion.button>
               </div>
 
-              <div className="p-6 md:p-8">
-                {/* ... existing header */}
-                <div className="space-y-4">
+              <div className="p-4 sm:p-6 md:p-8">
+                <div className="space-y-3 sm:space-y-4">
                   {dues.length > 0 ? (
                     dues.map((due, index) => (
                       <motion.div
@@ -446,48 +445,52 @@ const OfficeDash = ({ user }) => {
                         variants={fadeUpVariants}
                         initial="hidden"
                         animate="visible"
-                        className="flex justify-between items-center bg-white/10 p-4 rounded-xl"
+                        className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/10 p-3 sm:p-4 rounded-xl space-y-2 sm:space-y-0"
                       >
-                        <div className="text-md md:text-lg">
-                          <span className="font-medium text-white">
+                        <div className="text-sm sm:text-md md:text-lg w-full sm:w-auto">
+                          <span className="font-medium text-white block sm:inline">
                             {due?.studentName}
                           </span>
-                          <span className="block text-md md:text-lg text-white/60">
+                          <span className="block text-xs sm:text-sm md:text-md text-white/60 sm:ml-2">
                             {due?.department} - {due?.description}
                           </span>
                         </div>
-                        <div className="flex items-center space-x-2 text-md md:text-lg">
-                          <span className="font-bold text-white ">
-                            ₹{due?.amount}
-                          </span>
-                          <span
-                            className={`px-2 py-1 rounded-full  ${getStatusColor(
-                              due?.status
-                            )}`}
-                          >
-                            {due?.status}
-                          </span>
-                          {due?.status !== "Paid" && (
-                            <button
-                              onClick={() => handleSetDueStatus(due?._id)}
-                              className="ml-2 px-3 py-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition"
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+                          <div className="flex items-center justify-between w-full sm:w-auto">
+                            <span className="font-bold text-white text-sm sm:text-md md:text-lg mr-2 sm:mr-0">
+                              ₹{due?.amount}
+                            </span>
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs sm:text-sm ${getStatusColor(
+                                due?.status
+                              )}`}
                             >
-                              Mark as Paid
-                            </button>
-                          )}
-                          {due.status === "Paid" && (
-                            <button
-                              onClick={() => setConfirmDeleteDueId(due._id)}
-                              className="ml-2 px-3 py-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
-                            >
-                              Delete
-                            </button>
-                          )}
+                              {due?.status}
+                            </span>
+                          </div>
+                          <div className="flex space-x-2 w-full sm:w-auto">
+                            {due?.status !== "Paid" && (
+                              <button
+                                onClick={() => handleSetDueStatus(due?._id)}
+                                className="px-2 py-1 sm:px-3 sm:py-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition text-xs sm:text-sm"
+                              >
+                                Mark as Paid
+                              </button>
+                            )}
+                            {due.status === "Paid" && (
+                              <button
+                                onClick={() => setConfirmDeleteDueId(due._id)}
+                                className="px-2 py-1 sm:px-3 sm:py-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition text-xs sm:text-sm"
+                              >
+                                Delete
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </motion.div>
                     ))
                   ) : (
-                    <p className="text-white/60 text-center">No dues found</p>
+                    <p className="text-white/60 text-center text-sm sm:text-base">No dues found</p>
                   )}
                 </div>
               </div>

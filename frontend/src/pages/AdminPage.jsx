@@ -159,7 +159,7 @@ const AdminPage = () => {
   }
 
   return (
-    <div className="relative min-h-screen w-full bg-[#030303] p-6 overflow-hidden">
+    <div className="relative min-h-screen w-full bg-[#030303] p-4 sm:p-6 overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.03] via-transparent to-rose-500/[0.03] blur-[100px]" />
       
@@ -171,7 +171,7 @@ const AdminPage = () => {
           className="bg-gradient-to-br from-black/50 to-[#0D3B54]/30 rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/20"
         >
           {/* Header Section */}
-          <div className="p-6 md:p-8 border-b border-white/10 bg-gradient-to-r from-[#0D3B54]/30 to-[#1E3A4C]/30 mt-22">
+          <div className="p-4 sm:p-6 md:p-8 border-b border-white/10 bg-gradient-to-r from-[#0D3B54]/30 to-[#1E3A4C]/30">
             <motion.div 
               custom={0} 
               variants={fadeUpVariants} 
@@ -179,9 +179,9 @@ const AdminPage = () => {
               animate="visible"
               className="flex items-center justify-between"
             >
-              <div className="flex items-center space-x-3">
-                <FaChartBar className="text-3xl text-emerald-400" />
-                <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <FaChartBar className="text-2xl sm:text-3xl text-emerald-400" />
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
                   Admin Dashboard
                 </h1>
               </div>
@@ -189,7 +189,7 @@ const AdminPage = () => {
           </div>
 
           {/* Dashboard Content */}
-          <div className="p-6 md:p-8 space-y-8">
+          <div className="p-4 sm:p-6 md:p-8 space-y-6">
             {loading ? (
               <div className="flex justify-center items-center h-64">
                 <motion.div 
@@ -200,52 +200,52 @@ const AdminPage = () => {
                     ease: "linear" 
                   }}
                 >
-                  <FaChartBar className="text-4xl text-indigo-400 animate-pulse" />
+                  <FaChartBar className="text-3xl sm:text-4xl text-indigo-400 animate-pulse" />
                 </motion.div>
               </div>
             ) : error ? (
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-rose-500/10 border border-rose-500/30 rounded-2xl p-6 text-center"
+                className="bg-rose-500/10 border border-rose-500/30 rounded-2xl p-4 sm:p-6 text-center"
               >
-                <FaExclamationCircle className="text-4xl text-rose-400 mx-auto mb-4" />
-                <p className="text-white/70">{error}</p>
+                <FaExclamationCircle className="text-3xl sm:text-4xl text-rose-400 mx-auto mb-4" />
+                <p className="text-sm sm:text-base text-white/70">{error}</p>
               </motion.div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* Certificate Requests Overview */}
                 <motion.div 
                   custom={1}
                   variants={fadeUpVariants}
                   initial="hidden"
                   animate="visible"
-                  className="bg-white/5 rounded-2xl border border-white/10 p-6 space-y-6"
+                  className="bg-white/5 rounded-2xl border border-white/10 p-4 sm:p-6 space-y-4"
                 >
-                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <h2 className="text-2xl md:text-3xl font-semibold text-white">Certificate Requests</h2>
-                    <FaExclamationCircle className="text-indigo-400" />
+                  <div className="flex items-center justify-between border-b border-white/10 pb-2 sm:pb-4">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">Certificate Requests</h2>
+                    <FaExclamationCircle className="text-indigo-400 text-lg sm:text-xl" />
                   </div>
                   
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
-                      <p className="text-md md:text-lg text-white/70 mb-2">Total Requests</p>
-                      <p className="text-3xl md:text-4xl font-bold text-indigo-400">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                    <div className="bg-white/5 border border-white/10 p-2 sm:p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                      <p className="text-xs sm:text-md md:text-lg text-white/70 mb-1 sm:mb-2">Total Requests</p>
+                      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-indigo-400">
                         {analytics?.totalCertificateRequests}
                       </p>
                     </div>
-                    <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
-                      <p className="text-md md:text-lg text-white/70 mb-2">Approved</p>
-                      <p className="text-3xl md:text-4xl font-bold text-emerald-400">
+                    <div className="bg-white/5 border border-white/10 p-2 sm:p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                      <p className="text-xs sm:text-md md:text-lg text-white/70 mb-1 sm:mb-2">Approved</p>
+                      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-emerald-400">
                         {analytics?.approvedRequests}
-                        <FaCheckCircle className="inline-block ml-2 text-base" />
+                        <FaCheckCircle className="inline-block ml-1 sm:ml-2 text-xs sm:text-base" />
                       </p>
                     </div>
-                    <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
-                      <p className="text-md md:text-lg text-white/70 mb-2">Rejected</p>
-                      <p className="text-3xl md:text-4xl font-bold text-rose-400">
+                    <div className="bg-white/5 border border-white/10 p-2 sm:p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                      <p className="text-xs sm:text-md md:text-lg text-white/70 mb-1 sm:mb-2">Rejected</p>
+                      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-rose-400">
                         {analytics?.rejectedRequests}
-                        <FaTimesCircle className="inline-block ml-2 text-base" />
+                        <FaTimesCircle className="inline-block ml-1 sm:ml-2 text-xs sm:text-base" />
                       </p>
                     </div>
                   </div>
@@ -257,15 +257,15 @@ const AdminPage = () => {
                   variants={fadeUpVariants}
                   initial="hidden"
                   animate="visible"
-                  className="bg-white/5 rounded-2xl border border-white/10 p-6 space-y-6"
+                  className="bg-white/5 rounded-2xl border border-white/10 p-4 sm:p-6 space-y-4"
                 >
-                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <h2 className="text-2xl md:text-3xl font-semibold text-white">Rejection Reasons</h2>
-                    <FaTimesCircle className="text-rose-400" />
+                  <div className="flex items-center justify-between border-b border-white/10 pb-2 sm:pb-4">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">Rejection Reasons</h2>
+                    <FaTimesCircle className="text-rose-400 text-lg sm:text-xl" />
                   </div>
                   
                   {analytics?.rejectionReasons && Object.keys(analytics?.rejectionReasons).length > 0 ? (
-                    <ul className="space-y-3">
+                    <ul className="space-y-2 sm:space-y-3">
                       {Object.entries(analytics?.rejectionReasons).map(([reason, count], index) => (
                         <motion.li 
                           key={reason}
@@ -273,15 +273,15 @@ const AdminPage = () => {
                           variants={fadeUpVariants}
                           initial="hidden"
                           animate="visible"
-                          className="flex justify-between bg-white/5 border border-white/10 p-4 rounded-xl hover:bg-white/10 transition-all"
+                          className="flex justify-between bg-white/5 border border-white/10 p-2 sm:p-4 rounded-xl hover:bg-white/10 transition-all"
                         >
-                          <span className="text-white/80 font-medium">{reason}</span>
-                          <span className="text-rose-400 font-semibold">{count} times</span>
+                          <span className="text-xs sm:text-sm text-white/80 font-medium">{reason}</span>
+                          <span className="text-xs sm:text-sm text-rose-400 font-semibold">{count} times</span>
                         </motion.li>
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-white/70 text-center">No rejection reasons available</p>
+                    <p className="text-xs sm:text-base text-white/70 text-center">No rejection reasons available</p>
                   )}
                 </motion.div>
 
@@ -291,29 +291,29 @@ const AdminPage = () => {
                   variants={fadeUpVariants}
                   initial="hidden"
                   animate="visible"
-                  className="bg-white/5 rounded-2xl border border-white/10 p-6 space-y-6"
+                  className="bg-white/5 rounded-2xl border border-white/10 p-4 sm:p-6 space-y-4"
                 >
-                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <h2 className="text-2xl md:text-3xl font-semibold text-white">System Users</h2>
-                    <FaUsers className="text-cyan-400" />
+                  <div className="flex items-center justify-between border-b border-white/10 pb-2 sm:pb-4">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">System Users</h2>
+                    <FaUsers className="text-cyan-400 text-lg sm:text-xl" />
                   </div>
                   
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
-                      <p className="text-md md:text-lg text-white/70 mb-2">Total Users</p>
-                      <p className="text-3xl md:text-4xl font-bold text-cyan-400">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                    <div className="bg-white/5 border border-white/10 p-2 sm:p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                      <p className="text-xs sm:text-md md:text-lg text-white/70 mb-1 sm:mb-2">Total Users</p>
+                      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-cyan-400">
                         {systemAnalytics?.users?.total}
                       </p>
                     </div>
-                    <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
-                      <p className="text-md md:text-lg text-white/70 mb-2">Students</p>
-                      <p className="text-3xl md:text-4xl font-bold text-emerald-400">
+                    <div className="bg-white/5 border border-white/10 p-2 sm:p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                      <p className="text-xs sm:text-md md:text-lg text-white/70 mb-1 sm:mb-2">Students</p>
+                      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-emerald-400">
                         {systemAnalytics?.users?.students}
                       </p>
                     </div>
-                    <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
-                      <p className="text-md md:text-lg text-white/70 mb-2">Staff</p>
-                      <p className="text-3xl md:text-4xl font-bold text-indigo-400">
+                    <div className="bg-white/5 border border-white/10 p-2 sm:p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                      <p className="text-xs sm:text-md md:text-lg text-white/70 mb-1 sm:mb-2">Staff</p>
+                      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-indigo-400">
                         {systemAnalytics?.users?.officeStaff}
                       </p>
                     </div>
@@ -326,46 +326,46 @@ const AdminPage = () => {
                   variants={fadeUpVariants}
                   initial="hidden"
                   animate="visible"
-                  className="bg-white/5 rounded-2xl border border-white/10 p-6 space-y-6"
+                  className="bg-white/5 rounded-2xl border border-white/10 p-4 sm:p-6 space-y-4"
                 >
-                  <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <h2 className="text-2xl md:text-3xl font-semibold text-white">Dues Overview</h2>
-                    <FaMoneyBillWave className="text-emerald-400" />
+                  <div className="flex items-center justify-between border-b border-white/10 pb-2 sm:pb-4">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white">Dues Overview</h2>
+                    <FaMoneyBillWave className="text-emerald-400 text-lg sm:text-xl" />
                   </div>
                   
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
-                      <p className="text-md md:text-lg text-white/70 mb-2">Total Dues</p>
-                      <p className="text-3xl md:text-4xl font-bold text-cyan-400">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                    <div className="bg-white/5 border border-white/10 p-2 sm:p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                      <p className="text-xs sm:text-md md:text-lg text-white/70 mb-1 sm:mb-2">Total Dues</p>
+                      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-cyan-400">
                         {systemAnalytics?.dues?.total}
                       </p>
                     </div>
-                    <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
-                      <p className="text-md md:text-lg text-white/70 mb-2">Cleared</p>
-                      <p className="text-3xl md:text-4xl font-bold text-emerald-400">
+                    <div className="bg-white/5 border border-white/10 p-2 sm:p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                      <p className="text-xs sm:text-md md:text-lg text-white/70 mb-1 sm:mb-2">Cleared</p>
+                      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-emerald-400">
                         {systemAnalytics?.dues?.cleared}
-                        <FaCheckCircle className="inline-block ml-2 text-base" />
+                        <FaCheckCircle className="inline-block ml-1 sm:ml-2 text-xs sm:text-base" />
                       </p>
                     </div>
-                    <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
-                      <p className="text-md md:text-lg text-white/70 mb-2">Pending</p>
-                      <p className="text-3xl md:text-4xl font-bold text-amber-400">
+                    <div className="bg-white/5 border border-white/10 p-2 sm:p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                      <p className="text-xs sm:text-md md:text-lg text-white/70 mb-1 sm:mb-2">Pending</p>
+                      <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-amber-400">
                         {systemAnalytics?.dues?.pending}
-                        <FaTimesCircle className="inline-block ml-2 text-base" />
+                        <FaTimesCircle className="inline-block ml-1 sm:ml-2 text-xs sm:text-base" />
                       </p>
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
-                      <p className="text-md md:text-lg text-white/70 mb-2">Cleared Amount</p>
-                      <p className="text-2xl md:text-3xl font-bold text-emerald-400">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-4 mt-2 sm:mt-4">
+                    <div className="bg-white/5 border border-white/10 p-2 sm:p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                      <p className="text-xs sm:text-md md:text-lg text-white/70 mb-1 sm:mb-2">Cleared Amount</p>
+                      <p className="text-xl sm:text-2xl md:text-3xl font-bold text-emerald-400">
                         ₹{systemAnalytics?.dues?.clearedAmount?.toLocaleString()}
                       </p>
                     </div>
-                    <div className="bg-white/5 border border-white/10 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
-                      <p className="text-md md:text-lg text-white/70 mb-2">Pending Amount</p>
-                      <p className="text-2xl md:text-3xl font-bold text-amber-400">
+                    <div className="bg-white/5 border border-white/10 p-2 sm:p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                      <p className="text-xs sm:text-md md:text-lg text-white/70 mb-1 sm:mb-2">Pending Amount</p>
+                      <p className="text-xl sm:text-2xl md:text-3xl font-bold text-amber-400">
                         ₹{systemAnalytics?.dues?.pendingAmount?.toLocaleString()}
                       </p>
                     </div>
