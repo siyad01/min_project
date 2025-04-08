@@ -10,6 +10,7 @@ import {
   FaTimes,
   FaMoneyBillWave,
   FaPlus,
+  FaLock,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import "@fontsource/pacifico/400.css";
@@ -338,40 +339,40 @@ const OfficeDash = ({ user }) => {
             className="bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10 shadow-xl overflow-hidden mb-8"
           >
             <div className="p-4 sm:p-6 md:p-8">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white mb-4 sm:mb-6">
+              <h2 className="text-2xl md:text-3xl font-semibold text-white mb-6">
                 Certificate Requests
               </h2>
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs sm:text-sm md:text-md">
+                <table className="w-full text-left text-sm md:text-md">
                   <thead className="bg-white/10 text-white/70">
                     <tr>
-                      <th className="p-2 sm:p-3 hidden sm:table-cell">
+                      <th className="p-2 sm:p-3 hidden sm:table-cell text-sm md:text-lg">
                         Student
                       </th>
-                      <th className="p-2 sm:p-3">Department</th>
-                      <th className="p-2 sm:p-3 hidden md:table-cell">Date</th>
-                      <th className="p-2 sm:p-3">Reason</th>
-                      <th className="p-2 sm:p-3">Status</th>
-                      <th className="p-2 sm:p-3">Actions</th>
+                      <th className="p-2 sm:p-3 text-sm md:text-lg">Department</th>
+                      <th className="p-2 sm:p-3 hidden md:table-cell text-sm md:text-lg">Date</th>
+                      <th className="p-2 sm:p-3 text-sm md:text-lg">Reason</th>
+                      <th className="p-2 sm:p-3 text-sm md:text-lg">Status</th>
+                      <th className="p-2 sm:p-3 text-sm md:text-lg">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {certificateRequests.map((request) => (
                       <tr
                         key={request?._id}
-                        className="border-b border-white/10 hover:bg-white/5"
+                        className="border-b border-white/10 hover:bg-white/5 text-sm md:text-base"
                       >
-                        <td className="p-2 sm:p-3 hidden sm:table-cell">
+                        <td className="p-2 sm:p-3 hidden sm:table-cell text-sm md:text-base">
                           {request?.studentId?.firstName}{" "}
                           {request?.studentId?.lastName}
                         </td>
-                        <td className="p-2 sm:p-3">
+                        <td className="p-2 sm:p-3 text-sm md:text-base">
                           {request?.studentId?.department}
                         </td>
-                        <td className="p-2 sm:p-3 hidden md:table-cell">
+                        <td className="p-2 sm:p-3 hidden md:table-cell text-sm md:text-base">
                           {request?.requestDate?.split("T")[0]}
                         </td>
-                        <td className="p-2 sm:p-3">{request?.purpose}</td>
+                        <td className="p-2 sm:p-3 text-sm md:text-base">{request?.purpose}</td>
                         <td className="p-2 sm:p-3">
                           <span
                             className={`px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm ${getStatusColor(
@@ -390,7 +391,7 @@ const OfficeDash = ({ user }) => {
                                 onClick={() =>
                                   openStatusUpdateModal(request, "Approved")
                                 }
-                                className="text-green-400 hover:text-green-500 text-sm sm:text-base"
+                                className="text-green-400 hover:text-green-500 text-sm md:text-base"
                                 title="Approve Request"
                               >
                                 <FaCheck />
@@ -401,7 +402,7 @@ const OfficeDash = ({ user }) => {
                                 onClick={() =>
                                   openStatusUpdateModal(request, "Rejected")
                                 }
-                                className="text-red-400 hover:text-red-500 text-sm sm:text-base"
+                                className="text-red-400 hover:text-red-500 text-sm md:text-base"
                                 title="Reject Request"
                               >
                                 <FaTimes />
@@ -415,10 +416,21 @@ const OfficeDash = ({ user }) => {
                               onClick={() =>
                                 openStatusUpdateModal(request, request?.status)
                               }
-                              className="text-blue-400 hover:text-blue-500 text-sm sm:text-base"
+                              className="text-blue-400 hover:text-blue-500 text-sm md:text-base"
                               title="Update Status"
                             >
                               <FaEdit />
+                            </motion.button>
+                          )}
+                          {(request?.status === "APPROVED" ||
+                            request?.status === "REJECTED") && (
+                            <motion.button
+                              whileHover="hover"
+                              variants={buttonHoverVariants}
+                              className="text-gray-400 hover:text-gray-500 text-sm md:text-base"
+                              title="Status already updated"
+                            >
+                              <FaLock />
                             </motion.button>
                           )}
                         </td>
@@ -427,7 +439,7 @@ const OfficeDash = ({ user }) => {
                   </tbody>
                 </table>
                 {certificateRequests.length === 0 && (
-                  <p className="text-center text-white/60 p-4">
+                  <p className="text-center text-white/60 p-4 text-sm md:text-base">
                     No certificate requests found
                   </p>
                 )}
@@ -446,14 +458,14 @@ const OfficeDash = ({ user }) => {
           >
             <div className="p-4 sm:p-6 md:p-8">
               <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6">
-                <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white mb-3 sm:mb-0">
+                <h2 className="text-2xl md:text-3xl font-semibold text-white mb-3 sm:mb-0">
                   Dues Management
                 </h2>
                 <motion.button
                   onClick={() => setNewDueModalOpen(true)}
                   whileHover="hover"
                   variants={buttonHoverVariants}
-                  className="px-3 py-2 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-indigo-600/70 to-indigo-800/60 text-white font-medium flex items-center gap-2 text-sm sm:text-md"
+                  className="px-3 py-2 sm:px-4 sm:py-2 rounded-xl bg-gradient-to-r from-indigo-600/70 to-indigo-800/60 text-white font-medium flex items-center gap-2 text-sm md:text-base"
                 >
                   <FaPlus size={12} className="sm:mr-1" /> Add New Due
                 </motion.button>
@@ -471,17 +483,17 @@ const OfficeDash = ({ user }) => {
                         animate="visible"
                         className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/10 p-3 sm:p-4 rounded-xl space-y-2 sm:space-y-0"
                       >
-                        <div className="text-sm sm:text-md md:text-lg w-full sm:w-auto">
-                          <span className="font-medium text-white block sm:inline">
+                        <div className="text-sm md:text-base w-full sm:w-auto">
+                          <span className="font-medium text-white block sm:inline text-sm md:text-base">
                             {due?.studentName}
                           </span>
-                          <span className="block text-xs sm:text-sm md:text-md text-white/60 sm:ml-2">
+                          <span className="block text-xs sm:text-sm md:text-base text-white/60 sm:ml-2">
                             {due?.department} - {due?.description}
                           </span>
                         </div>
                         <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
                           <div className="flex items-center justify-between w-full sm:w-auto">
-                            <span className="font-bold text-white text-sm sm:text-md md:text-lg mr-2 sm:mr-0">
+                            <span className="font-bold text-white text-sm md:text-base mr-2 sm:mr-0">
                               ₹{due?.amount}
                             </span>
                             <span
@@ -514,7 +526,7 @@ const OfficeDash = ({ user }) => {
                       </motion.div>
                     ))
                   ) : (
-                    <p className="text-white/60 text-center text-sm sm:text-base">
+                    <p className="text-white/60 text-center text-sm md:text-base">
                       No dues found
                     </p>
                   )}
