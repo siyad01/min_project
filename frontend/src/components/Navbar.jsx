@@ -93,7 +93,7 @@ const Navbar = ({ userType }) => {
                 className="h-10 w-10 object-contain"
               />
               <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
-                No Due Certificate Generator
+                No Due App
               </h1>
             </Link>
           </motion.div>
