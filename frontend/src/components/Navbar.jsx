@@ -1,204 +1,142 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { 
-  FaHome, 
-  FaUser, 
-  FaSignOutAlt, 
-  FaBars, 
-  FaTimes,
-  FaUserCircle
-} from 'react-icons/fa'
-import { UserData } from '../context/authContext'
+/* eslint-disable react/prop-types */
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FaHome, FaUser, FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
+import { UserData } from "../context/authContext";
 
-const Navbar = ({userType,user}) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const navigate = useNavigate()
-  const { isAuth, logout } = UserData()
+const Navbar = ({ userType }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { isAuth, logout } = UserData();
 
-  // If not authenticated, return null
-  if (!isAuth) {
-    return null
-  }
+  if (!isAuth) return null;
 
-
-  const handleLogout = () => {
-    logout()
-    navigate('/login')
-  }
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
+    if (userType === "Admin") {
+      navigate("/admin-dash");
+    }
+  };
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen)
-  }
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   const getDashboardRoute = () => {
-    switch(userType) {
-      case 'Student':
-        return '/student-dash'
-      case 'Office Staff':
-        return '/office-dash'
-      case 'Admin':
-        return '/admin'
+    switch (userType) {
+      case "Student":
+        return "/student-dash";
+      case "Officer":
+        return "/office-dash";
+      case "Admin":
+        return "/admin-dash";
       default:
-        return '/'
+        return "/";
     }
-  }
-
-  const getUserRole = () => {
-    const officeDepartments = [
-      'Office', 
-      'Library', 
-      'Hostel', 
-      'Canteen', 
-      'Co-op Store', 
-      'Sports Department', 
-      'Placement & Training Cell', 
-      'CSE Department Labs', 
-      'ECE Department Labs', 
-      'Civil Department Labs', 
-      'EEE Department Labs', 
-      'College Bus', 
-      'Class Tutor'
-    ];
-    // Check if user has semester (student)
-    if (user?.semester) {
-      return 'Student';
-    }
-
-    // Check if user has department from office staff list
-    if (user?.department && officeDepartments.includes(user.department)) {
-      return `${user.department} Staff`;
-    }
-
-    // Check for admin role
-    if (user?.role === 'admin') {
-      return 'Admin';
-    }
-
-    // Fallback
-    return 'User';
-  }
+  };
 
   const NavLinks = () => (
     <>
-      <Link 
-        to={getDashboardRoute()} 
-        className="flex items-center space-x-2 hover:text-[#E0E6E3] transition-colors duration-300 py-2 md:py-0"
-        onClick={() => setIsMenuOpen(false)}
-      >
-        <FaHome />
-        <span>Dashboard</span>
-      </Link>
-      <Link 
-        to="/change-password" 
-        className="flex items-center space-x-2 hover:text-[#E0E6E3] transition-colors duration-300 py-2 md:py-0"
-        onClick={() => setIsMenuOpen(false)}
-      >
-        <FaUser />
-        <span>Change Password</span>
-      </Link>
-      <button 
-        onClick={handleLogout}
-        className="flex items-center space-x-2 hover:text-[#E0E6E3] transition-colors duration-300 py-2 md:py-0 text-left w-full md:w-auto"
-      >
-        <FaSignOutAlt />
-        <span>Logout</span>
-      </button>
-    </>
-  )
-
-  return (
-    <nav className="bg-[#0D3B54] text-white py-4 px-6 shadow-md relative">
-      <div className="container mx-auto flex justify-between items-center">
-        {/* Logo Section */}
-        <Link to="/" className="flex items-center space-x-3">
-          <img 
-            src="/logo4.png" 
-            alt="No Due Certificate Generator" 
-            className="h-12 w-12 object-contain"
-          />
-          <span className="text-xl md:text-2xl font-bold text-white tracking-tight">
-            No Due Certificate Generator
+      <motion.div whileHover={{ scale: 1.05 }}>
+        <Link
+          to={getDashboardRoute()}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          <FaHome className="text-indigo-400" />
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
+            Dashboard
           </span>
         </Link>
+      </motion.div>
 
-        {/* User Info and Navigation */}
-        <div className="flex items-center space-x-4">
-          {/* User Profile */}
-          <div className="flex items-center space-x-2">
-            <FaUserCircle className="text-2xl" />
-            <div className="hidden md:block">
-              <p className="text-sm font-semibold">
-                {user?.firstName} {user?.lastName}
-              </p>
-              <p className="text-xs text-gray-300">
-                {userType}
-              </p>
+      <motion.div whileHover={{ scale: 1.05 }}>
+        <Link
+          to="/change-password"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          <FaUser className="text-rose-400" />
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
+            Change Password
+          </span>
+        </Link>
+      </motion.div>
+
+      <motion.div whileHover={{ scale: 1.05 }}>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-rose-600/30 to-rose-800/20 hover:from-rose-600/40 hover:to-rose-800/30 transition-all duration-300 w-full"
+        >
+          <FaSignOutAlt className="text-rose-400" />
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
+            Logout
+          </span>
+        </button>
+      </motion.div>
+    </>
+  );
+
+  return (
+    <nav className="bg-gradient-to-b backdrop-blur-sm border-b border-white/10 fixed top-0 w-full z-50 shadow-2xl">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
+          {/* Logo - Left Side */}
+          <motion.div whileHover={{ scale: 1.05 }} className="flex-shrink-0">
+            <Link to="/" className="flex items-center gap-3">
+              <img
+                src="/logo4.png"
+                alt="Logo"
+                className="h-10 w-10 object-contain"
+              />
+              <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">
+                No Due Certificate Generator
+              </h1>
+            </Link>
+          </motion.div>
+
+          {/* Right Section - Navigation Links */}
+          <div className="flex items-center space-x-4">
+            {/* Desktop Navigation */}
+            <div className="hidden text-lg md:text-xl md:flex items-center space-x-4">
+              <NavLinks />
             </div>
-          </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex text-lg md:text-xl items-center space-x-8">
-            <NavLinks />
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <div className="md:hidden">
-            <button 
-              onClick={toggleMenu} 
-              className="text-white focus:outline-none"
+            {/* Mobile Menu Toggle */}
+            <motion.button
+              onClick={toggleMenu}
+              whileHover={{ scale: 1.1 }}
+              className="md:hidden p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
             >
-              {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-            </button>
+              {isMenuOpen ? (
+                <FaTimes className="text-white/80" size={20} />
+              ) : (
+                <FaBars className="text-white/80" size={20} />
+              )}
+            </motion.button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden fixed inset-0 bg-[#0D3B54] z-50 flex flex-col">
-          <div className="flex justify-between items-center p-6">
-            <Link 
-              to="/" 
-              className="flex items-center space-x-3"
-              onClick={toggleMenu}
-            >
-              <img 
-                src="/logo4.png" 
-                alt="No Due Certificate Generator" 
-                className="h-10 w-10 object-contain"
-              />
-              <span className="text-xl md:text-2xl font-bold text-white tracking-tight">
-                No Due Certificate Generator
-              </span>
-            </Link>
-
-            <button 
-              onClick={toggleMenu} 
-              className="text-white focus:outline-none"
-            >
-              <FaTimes size={24} />
-            </button>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="md:hidden bg-gradient-to-b from-[#0D3B54]/90 to-[#1E3A4C]/90 backdrop-blur-lg border-b border-white/10 px-4 pb-4"
+        >
+          <div className="pt-4 flex flex-col items-center gap-4">
+            <div className="w-full space-y-2">
+              <NavLinks />
+            </div>
           </div>
-          
-          {/* User Info in Mobile View */}
-          <div className="flex flex-col items-center mb-6">
-            <FaUserCircle className="text-4xl mb-2" />
-            <p className="text-lg font-semibold">
-              {user?.firstName} {user?.lastName}
-            </p>
-            <p className="text-sm text-gray-300">
-              {getUserRole()}
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center justify-center space-y-6 flex-grow">
-            <NavLinks />
-          </div>
-        </div>
+        </motion.div>
       )}
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

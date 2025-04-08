@@ -21,6 +21,12 @@ const studentSchema = new mongoose.Schema({
       "Please provide a valid email",
     ],
   },
+  admissionNo: {
+    type: String,
+    required: [true, "Please provide a student number"],
+    unique: true,
+    trim: true
+  },
   password: {
     type: String,
     required: [true, "Please provide a password"],

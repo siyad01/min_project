@@ -4,12 +4,15 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import multer from 'multer';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 // Routes
 import authRoutes from './routes/authRoutes.js';
 import tokenAuthRoutes from './routes/tokenAuthRoutes.js';
-// import dueRoutes from './routes/dueRoutes.js';
-// import certificateRoutes from './routes/certificateRoutes.js';
-// import analyticsRoutes from './routes/analyticsRoutes.js';
+import dueRoutes from './routes/dueRoutes.js';
+import certificateRoutes from './routes/certificateRoutes.js';
+import analyticsRoutes from './routes/analyticsRoutes.js';
 import connectMongo from './db/db.js';
 
 dotenv.config();
@@ -35,11 +38,19 @@ app.use(upload.any());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/authentication', tokenAuthRoutes);
-// app.use('/api/dues', dueRoutes.default);
-// app.use('/api/certificates', certificateRoutes.default);
-// app.use('/api/analytics', analyticsRoutes.default);
+app.use('/api/dues', dueRoutes);
+app.use('/api/certificates', certificateRoutes);
+app.use('/api/admin/analytics', analyticsRoutes);
 
 
+// Serve static files from React app
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+// For any other route, serve React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+});
+ 
 // Global Error Handler
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

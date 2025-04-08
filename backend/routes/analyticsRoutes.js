@@ -1,14 +1,10 @@
-// // routes/analyticsRoutes.js
-// import express from 'express';
-// import { getSystemAnalytics } from '../controllers/analyticsController.js';
-// import { protect, authorize } from '../middlewares/authMiddleware.js';
+import express from 'express';
+import { getAdminAnalytics, getSystemAnalytics } from '../controllers/analyticsController.js';
+import { isAuth } from '../middlewares/authMiddleware.js';
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.get('/', 
-//   protect, 
-//   authorize('admin'), 
-//   getSystemAnalytics
-// );
+router.get('/', isAuth, getAdminAnalytics);
+router.get('/system', isAuth, getSystemAnalytics);
 
-// export default router;
+export default router;

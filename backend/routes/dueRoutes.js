@@ -1,26 +1,19 @@
-// // routes/dueRoutes.js
-// import express from 'express';
-// import * as dueController from '../controllers/dueController.js';
-// import { protect, authorize } from '../middlewares/authMiddleware.js';
+import express from "express";
+import { createDue,fetchAllDues ,setDueStatus,deleteDue,fetchStudentDues ,requestCashPayment} from "../controllers/dueController.js";
+import {isAuth} from "../middlewares/authMiddleware.js";
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.post('/', 
-//   protect, 
-//   authorize('office'), 
-//   dueController.createDue
-// );
 
-// router.post('/:id/pay', 
-//   protect, 
-//   authorize('student'), 
-//   dueController.payDue
-// );
+router.post("/reg-due", isAuth, createDue);
 
-// router.get('/students', 
-//   protect, 
-//   authorize('student'), 
-//   dueController.getStudentDues
-// );
+router.get("/", isAuth, fetchAllDues);
 
-// export default router;
+router.get("/:studentId", isAuth, fetchStudentDues);
+// router.post("/:dueId/pay", isAuth, payDue);
+router.put("/:dueId/status", isAuth, setDueStatus);
+router.delete("/:dueId", isAuth, deleteDue);
+router.post("/:dueId/cash-payment", isAuth, requestCashPayment);
+
+
+export default router;

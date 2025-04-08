@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: no-due-certificate-app
+    runtime: node
+    region: singapore
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URI
+        fromDatabase:
+          name: no-due-certificate-db
+          property: connectionString
+      - key: JWT_SEC
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: admin@example.com
+      - key: PORT
+        value: 5000
+
+databases:
+  - name: no-due-certificate-db
+    plan: free

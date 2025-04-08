@@ -31,16 +31,7 @@ const officeSchema = new mongoose.Schema({
     required: [true, "Please provide a department"],
     enum: [
       'Office', 
-      'Library', 
-      'Hostel', 
-      'Canteen', 
-      'Co-op Store', 
-      'Sports Department', 
-      'Placement & Training Cell', 
-      'CSE Department Labs', 
-      'ECE Department Labs', 
-      'Civil Department Labs', 
-      'EEE Department Labs', 
+      'Library',
       'College Bus', 
       'Class Tutor'
     ]

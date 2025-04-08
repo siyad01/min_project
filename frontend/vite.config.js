@@ -8,11 +8,32 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    outDir: 'dist'
+  },
   server: {
     proxy: {
-      "/api": {
+      "/api/authentication": {
         target: "http://localhost:5000",
-      }
+        changeOrigin: true,
+      },
+      "/api/auth": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+      },
+      "/api/dues": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+      },
+      "/api/certificates": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+      },
+      "/api/admin/analytics": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+      },
+      
     }
   }
 })

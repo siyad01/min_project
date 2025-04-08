@@ -1,21 +1,18 @@
-/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { UserData } from "../context/authContext";
 import { FaSignInAlt, FaArrowRight, FaHome } from "react-icons/fa";
-import { UserData } from "../context/authContext.jsx";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import toast from 'react-hot-toast';
-import cn from 'classnames';
 
-const Login = () => {
+const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState("student");
   const [loading, setLoading] = useState(false);
 
+  const { loginAdmin } = UserData();
   const navigate = useNavigate();
-  const { loginStudent, loginOfficer } = UserData();
 
   const fadeUpVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -42,31 +39,8 @@ const Login = () => {
     setLoading(true);
 
     try {
-      let loginFunction;
-      switch (userType) {
-        case "student":
-          loginFunction = loginStudent;
-          break;
-        case "office":
-          loginFunction = loginOfficer;
-          break;
-        default:
-          throw new Error("Invalid user type");
-      }
-
-      await loginFunction(email, password);
-      
-      // Navigate based on user type
-      switch (userType) {
-        case "student":
-          navigate("/student-dash");
-          break;
-        case "office":
-          navigate("/office-dash");
-          break;
-        default:
-          navigate("/");
-      }
+      await loginAdmin(email, password);
+      navigate("/admin-dash");
     } catch (err) {
       toast.error(
         err.response?.data?.message || "Login failed. Please try again."
@@ -75,17 +49,6 @@ const Login = () => {
       setLoading(false);
     }
   };
-
-  let color;
-  let bgs;
-  if (userType === "student") {
-     color = "text-indigo-500/70";
-     bgs = "bg-gradient-to-r from-indigo-600/70 to-indigo-800/60";
-  } 
-  else{
-    color = "text-rose-500/70";
-    bgs = "bg-gradient-to-r from-rose-600/70 to-rose-800/60";
-  }
 
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#030303]">
@@ -110,9 +73,9 @@ const Login = () => {
               className="flex items-center justify-between"
             >
               <div className="flex items-center space-x-3">
-                <FaSignInAlt className={`text-2xl ${color}`} />
+                <FaSignInAlt className="text-2xl text-emerald-400/80" />
                 <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
-                  {userType === "student" ? "Student" : "Office Staff"} Login
+                  Admin Login
                 </h1>
               </div>
               <motion.button
@@ -122,7 +85,7 @@ const Login = () => {
                 className="p-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
                 title="Back to Home"
               >
-                <FaHome className="text-white/70 text-md md:text-lg" />
+                <FaHome className="text-white/70 text-lg" />
               </motion.button>
             </motion.div>
           </div>
@@ -137,19 +100,7 @@ const Login = () => {
                 className="space-y-6"
               >
                 <motion.div custom={0} variants={fadeUpVariants} initial="hidden" animate="visible">
-                  <label className="block text-md md:text-lg font-medium mb-2 text-white/70">Login As</label>
-                  <select
-                    value={userType}
-                    onChange={(e) => setUserType(e.target.value)}
-                    className="w-full px-4 py-3 bg-black border border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-400/50 focus:outline-none text-white"
-                  >
-                    <option value="student">Student</option>
-                    <option value="office">Office Staff</option>
-                  </select>
-                </motion.div>
-
-                <motion.div custom={1} variants={fadeUpVariants} initial="hidden" animate="visible">
-                  <label className="block text-md md:text-lg font-medium mb-2 text-white/70">Email</label>
+                  <label className="block text-sm font-medium mb-2 text-white/70">Email</label>
                   <input
                     type="email"
                     value={email}
@@ -159,8 +110,8 @@ const Login = () => {
                   />
                 </motion.div>
 
-                <motion.div custom={2} variants={fadeUpVariants} initial="hidden" animate="visible">
-                  <label className="block text-md md:text-lg font-medium mb-2 text-white/70">Password</label>
+                <motion.div custom={1} variants={fadeUpVariants} initial="hidden" animate="visible">
+                  <label className="block text-sm font-medium mb-2 text-white/70">Password</label>
                   <input
                     type="password"
                     value={password}
@@ -170,45 +121,20 @@ const Login = () => {
                   />
                 </motion.div>
 
-                <motion.div custom={3} variants={fadeUpVariants} initial="hidden" animate="visible">
+                <motion.div custom={2} variants={fadeUpVariants} initial="hidden" animate="visible">
                   <motion.button
                     type="submit"
                     disabled={loading}
                     variants={buttonHoverVariants}
                     whileHover="hover"
-                    className={`text-md md:text-lg w-full py-4 ${bgs} text-white font-semibold rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400/50 transition-all duration-300 flex items-center justify-center space-x-2`}
+                    className="w-full py-4 bg-gradient-to-r from-emerald-600/70 to-emerald-800/60 text-white font-semibold rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-400/50 transition-all duration-300 flex items-center justify-center space-x-2"
                   >
                     <span>{loading ? 'Logging in...' : 'Login'}</span>
-                    {!loading && <FaArrowRight className="text-md md:text-lg" />}
+                    {!loading && <FaArrowRight className="text-sm" />}
                   </motion.button>
                 </motion.div>
               </motion.div>
             </form>
-
-            <motion.div 
-              custom={4} 
-              variants={fadeUpVariants} 
-              initial="hidden" 
-              animate="visible"
-              className="mt-6 text-center"
-            >
-              <p className="text-md md:text-lg text-white/70">
-                Don't have an account?{" "}
-                <Link
-                  to="/student-register"
-                  className={`font-bold ${color} hover:underline`}
-                >
-                  Register as Student
-                </Link>{" "}
-                or{" "}
-                <Link
-                  to="/office-register"
-                  className={`font-bold ${color} hover:underline`}
-                >
-                  Register as Office Staff
-                </Link>
-              </p>
-            </motion.div>
           </div>
         </motion.div>
       </div>
@@ -216,4 +142,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;

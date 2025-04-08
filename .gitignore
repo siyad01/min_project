@@ -8,10 +8,7 @@ backend/node_modules/
 *.env
 
 # Build directories
-build/
-dist/
-frontend/build/
-backend/build/
+frontend/dist/
 
 # Logs
 logs
@@ -26,3 +23,7 @@ yarn-error.log*
 *.swp
 *.swo
 .DS_Store
+
+# OS generated files
+.DS_Store
+Thumbs.db

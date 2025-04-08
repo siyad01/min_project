@@ -2,14 +2,18 @@
 import mongoose from 'mongoose';
 
 const dueSchema = new mongoose.Schema({
-  student: {
+  studentId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Student',
     required: true
   },
-  officeStaff: {
+  officeStaffId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Officer',
+    required: true
+  },
+  studentName: {
+    type: String,
     required: true
   },
   amount: {
@@ -26,22 +30,15 @@ const dueSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['Pending', 'Paid', 'Cancelled'],
+    enum: ['Pending', 'Paid'],
     default: 'Pending'
   },
-  paymentDetails: {
-    transactionId: String,
-    paymentDate: Date
+  paidAt: {
+    type: Date,
+    default: null
   }
 }, { timestamps: true });
 
 const Due = mongoose.model('Due', dueSchema);
-
-// Static methods for easier importing
-export const create = (data) => Due.create(data);
-export const findById = (id) => Due.findById(id);
-export const find = (query) => Due.find(query);
-export const findOne = (query) => Due.findOne(query);
-export const findByIdAndUpdate = (id, update, options) => Due.findByIdAndUpdate(id, update, options);
 
 export default Due;

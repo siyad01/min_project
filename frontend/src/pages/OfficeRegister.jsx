@@ -1,42 +1,52 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FaCertificate } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  FaArrowRight,
+  FaCertificate,
+  FaChevronLeft,
+  FaUserGraduate,
+} from "react-icons/fa";
 import { UserData } from "../context/authContext.jsx";
-
+import toast from "react-hot-toast";
+import cn from "classnames";
 
 const OfficeRegister = () => {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [department, setDepartment] = useState("");
   const [btnLoading, setBtnLoading] = useState(false);
-  const navigate = useNavigate();
   const { registerOfficer } = UserData();
 
+  const fadeUpVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        delay: i * 0.1,
+        ease: [0.25, 0.4, 0.25, 1],
+      },
+    }),
+  };
+
+  const buttonHoverVariants = {
+    hover: {
+      scale: 1.02,
+      boxShadow: "0 8px 32px rgba(255, 255, 255, 0.1)",
+    },
+  };
+
   const handleNextStep = () => {
-    // Validate first step inputs
-    if (!firstName || !lastName || !email || !password) {
-      console.error("Please fill in all fields");
+    if (step === 1 && (!firstName || !lastName || !email || !password)) {
+      toast.error("Please fill in all fields");
       return;
     }
-
-    // Password validation
-    if (password.length < 6) {
-      console.error("Password must be at least 6 characters long");
-      return;
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      console.error("Please enter a valid email address");
-      return;
-    }
-
     setStep((prevStep) => prevStep + 1);
   };
 
@@ -55,13 +65,6 @@ const OfficeRegister = () => {
       return;
     }
 
-    // Password confirmation check
-    if (password !== confirmPassword) {
-      console.error("Passwords do not match");
-      setBtnLoading(false);
-      return;
-    }
-
     try {
       // Create FormData for multipart form submission
       const formData = new FormData();
@@ -72,10 +75,9 @@ const OfficeRegister = () => {
       formData.append("department", department);
 
       // Call registerOfficer function
-      registerOfficer(formData);
+      await registerOfficer(formData);
 
       // Show success toast and navigate to login
-      
     } catch (error) {
       console.error("Office Registration error", error);
     } finally {
@@ -84,195 +86,267 @@ const OfficeRegister = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#E0E6E3] via-[#5A6D7C] to-[#0D3B54] p-4 sm:p-8 overflow-hidden">
-      <div className="bg-white/90 p-10 rounded-3xl shadow-2xl w-full max-w-lg relative overflow-hidden">
-        <div className="flex items-center justify-center mb-6">
-          <div className="flex items-center space-x-4">
-            <img
-              src="/logo1.png"
-              alt="No Due Certificate Generator"
-              className="h-16 w-16 md:h-24 md:w-24 object-contain"
-            />
-            <h1 className="text-2xl md:text-4xl font-extrabold text-[#1E3A4C] font-sans tracking-tight leading-tight">
-              No Due Certificate Generator
-            </h1>
-          </div>
-        </div>
+    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#030303]">
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.03] via-transparent to-rose-500/[0.03] blur-[100px]" />
 
-        <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-[#1E3A4C]">
-          Office Staff Registration
-        </h2>
-
-        <form onSubmit={submitHandler}>
-          {step === 1 && (
-            <div>
-              <div className="flex space-x-4 mb-4">
-                <div className="w-1/2">
-                  <label
-                    htmlFor="firstName"
-                    className="block text-sm font-medium mb-2 text-[#0D3B54]"
-                  >
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    id="firstName"
-                    className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#0D3B54]/50"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="w-1/2">
-                  <label
-                    htmlFor="lastName"
-                    className="block text-sm font-medium mb-2 text-[#0D3B54]"
-                  >
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    id="lastName"
-                    className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#0D3B54]/50"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium mb-2 text-[#0D3B54]"
-                >
-                  Official Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#0D3B54]/50"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium mb-2 text-[#0D3B54]"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#0D3B54]/50"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="mb-4">
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-medium mb-2 text-[#0D3B54]"
-                >
-                  Confirm Password
-                </label>
-                <input
-                  type="password"
-                  id="confirmPassword"
-                  className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#0D3B54]/50"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
-              </div>
-
-              <button
-                type="button"
-                onClick={handleNextStep}
-                className="w-full py-3 rounded-xl bg-[#0D3B54] text-white font-semibold 
-                  hover:bg-[#1E3A4C] focus:outline-none focus:ring-2 focus:ring-[#0D3B54] 
-                  focus:ring-opacity-50 transition-all duration-300"
-              >
-                Next
-              </button>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div>
-              <div className="mb-4">
-                <label
-                  htmlFor="department"
-                  className="block text-sm font-medium mb-2 text-[#0D3B54]"
-                >
-                  Department
-                </label>
-                <select
-                  id="department"
-                  className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#0D3B54]/50"
-                  value={department}
-                  onChange={(e) => setDepartment(e.target.value)}
-                  required
-                >
-                  <option value="">Select Department</option>
-                  <option value="Office">Office</option>
-                  <option value="Library">Library</option>
-                  <option value="Hostel">Hostel (if applicable)</option>
-                  <option value="Canteen">Canteen</option>
-                  <option value="Co-op Store">Co-op Store</option>
-                  <option value="Sports Department">Sports Department</option>
-                  <option value="Placement & Training Cell">Placement & Training Cell</option>
-                  <option value="CSE Department Labs">CSE Department Labs</option>
-                  <option value="ECE Department Labs">ECE Department Labs</option>
-                  <option value="Civil Department Labs">Civil Department Labs</option>
-                  <option value="EEE Department Labs">EEE Department Labs</option>
-                  <option value="College Bus">College Bus</option>
-                  <option value="Class Tutor">Class Tutor</option>
-                </select>
-              </div>
-
-              <div className="flex space-x-4">
-                <button
-                  type="button"
-                  onClick={handlePrevStep}
-                  className="w-1/2 py-3 rounded-xl border border-[#0D3B54] text-[#0D3B54] font-semibold 
-                    hover:bg-[#0D3B54]/10 focus:outline-none focus:ring-2 focus:ring-[#0D3B54] 
-                    focus:ring-opacity-50 transition-all duration-300"
-                >
-                  Previous
-                </button>
-                <button
-                  type="submit"
-                  className="w-1/2 py-3 rounded-xl bg-[#0D3B54] text-white font-semibold 
-                    hover:bg-[#1E3A4C] focus:outline-none focus:ring-2 focus:ring-[#0D3B54] 
-                    focus:ring-opacity-50 transition-all duration-300"
-                  disabled={btnLoading}
-                >
-                  {btnLoading ? "Submitting..." : "Submit"}
-                </button>
-              </div>
-            </div>
-          )}
-        </form>
-
-        <div className="mt-6 text-center">
-          <p className="text-sm text-[#1E3A4C]/70">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="font-bold text-[#0D3B54] hover:underline"
+      {/* Content Container */}
+      <div className="relative z-10 p-4 sm:p-8 w-full max-w-2xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="bg-gradient-to-br from-black/50 to-[#0D3B54]/30 rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/20"
+        >
+          {/* Header Section */}
+          <div className="p-6 md:p-8 border-b border-white/10 bg-gradient-to-r from-[#0D3B54]/30 to-[#1E3A4C]/30">
+            <motion.div
+              custom={0}
+              variants={fadeUpVariants}
+              initial="hidden"
+              animate="visible"
+              className="flex items-center justify-between"
             >
-              Login
-            </Link>
-          </p>
-        </div>
+              <div className="flex items-center space-x-3">
+                <FaUserGraduate className="text-2xl text-rose-400" />
+                <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/80">
+                  Officer Registration
+                </h1>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-rose-400"></div>
+                <span className="text-sm md:text-base text-white/60">
+                  Step {step} of 2
+                </span>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Form Section */}
+          <div className="p-6 md:p-8">
+            <form onSubmit={submitHandler}>
+              {/* Step 1: Basic Information */}
+              {step === 1 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="space-y-6"
+                >
+                  <motion.div
+                    custom={0}
+                    variants={fadeUpVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-md md:text-lg font-medium mb-2 text-white/70">
+                          First Name
+                        </label>
+                        <input
+                          type="text"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          className="w-full px-4 py-3 bg-black  border border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-400/50 focus:outline-none text-white"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-md md:text-lg font-medium mb-2 text-white/70">
+                          Last Name
+                        </label>
+                        <input
+                          type="text"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          className="w-full px-4 py-3 bg-black border border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-400/50 focus:outline-none text-white"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    custom={1}
+                    variants={fadeUpVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <label className="block text-md md:text-lg font-medium mb-2 text-white/70">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full px-4 py-3  border border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-400/50 focus:outline-none text-white"
+                      required
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    custom={2}
+                    variants={fadeUpVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <label className="block text-md md:text-lg font-medium mb-2 text-white/70">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full px-4 py-3  border border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-400/50 focus:outline-none text-white"
+                      required
+                    />
+                  </motion.div>
+
+                  <motion.div
+                    custom={3}
+                    variants={fadeUpVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <label className="block text-md md:text-lg font-medium mb-2 text-white/70">
+                      Department
+                    </label>
+                    <select
+                      value={department}
+                      onChange={(e) => setDepartment(e.target.value)}
+                      className="w-full px-4 py-3 bg-black  border border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-400/50 focus:outline-none text-white"
+                      required
+                    >
+                      <option value="">Select Department</option>
+                      <option value="Office">Office</option>
+                      <option value="Library">Library</option>
+                      <option value="College Bus">College Bus</option>
+                      <option value="Class Tutor">Class Tutor</option>
+                    </select>
+                  </motion.div>
+                  <motion.div
+                    custom={3}
+                    variants={fadeUpVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <motion.button
+                      type="button"
+                      onClick={handleNextStep}
+                      variants={buttonHoverVariants}
+                      whileHover="hover"
+                      className="text-md md:text-lg w-full py-4 bg-gradient-to-r from-rose-400/70 to-rose-600/60 text-white font-semibold rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400/50 transition-all duration-300 flex items-center justify-center space-x-2"
+                    >
+                      <span>Continue</span>
+                      <FaArrowRight className="text-md md:text-lg" />
+                    </motion.button>
+                  </motion.div>
+                </motion.div>
+              )}
+
+              {/* Step 3: Review & Submit */}
+              {step === 2 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="space-y-6"
+                >
+                  <motion.div
+                    custom={0}
+                    variants={fadeUpVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <h3 className="text-xl md:text-2xl font-semibold mb-4 text-center text-white">
+                      Review Your Information
+                    </h3>
+                    <div className="space-y-3 mb-6 bg-white/5 p-6 rounded-xl border border-white/10 text-lg md:text-xl">
+                      <div className="flex justify-between py-2 border-b border-white/10">
+                        <span className="text-white/70">Name:</span>
+                        <span className="text-white">
+                          {firstName} {lastName}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b border-white/10">
+                        <span className="text-white/70">Email:</span>
+                        <span className="text-white">{email}</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b border-white/10">
+                        <span className="text-white/70">Department:</span>
+                        <span className="text-white">{department}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    custom={1}
+                    variants={fadeUpVariants}
+                    initial="hidden"
+                    animate="visible"
+                  >
+                    <div className="grid grid-cols-2 gap-4">
+                      <motion.button
+                        type="button"
+                        onClick={handlePrevStep}
+                        whileHover={{ scale: 1.02 }}
+                        className="text-md md:text-lg py-3 bg-white/5 border border-white/10 text-white font-semibold rounded-xl shadow-lg focus:outline-none focus:ring-2 focus:ring-white/20 transition-all duration-300 flex items-center justify-center space-x-2"
+                      >
+                        <FaChevronLeft className="text-md md:text-lg" />
+                        <span>Back</span>
+                      </motion.button>
+                      <motion.button
+                        type="submit"
+                        variants={buttonHoverVariants}
+                        whileHover="hover"
+                        disabled={btnLoading}
+                        className={cn(
+                          "text-md md:text-lg py-3 text-white font-semibold rounded-xl shadow-lg focus:outline-none focus:ring-2 transition-all duration-300 flex items-center justify-center space-x-2",
+                          btnLoading
+                            ? "bg-rose-600/60 cursor-not-allowed"
+                            : "bg-gradient-to-r from-rose-400/70 to-rose-600/60 focus:ring-rose-400/50"
+                        )}
+                      >
+                        {btnLoading ? (
+                          <span>Processing...</span>
+                        ) : (
+                          <>
+                            <span>Complete Registration</span>
+                            <FaCertificate className="text-md md:text-lg" />
+                          </>
+                        )}
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </form>
+          </div>
+
+          {/* Footer Section */}
+          <div className="p-4 border-t border-white/10 text-center">
+            <motion.div
+              custom={4}
+              variants={fadeUpVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <p className="text-md md:text-lg text-white/50">
+                Already have an account?{" "}
+                <Link
+                  to="/login"
+                  className="text-rose-400 hover:underline font-medium"
+                >
+                  Login here
+                </Link>
+              </p>
+            </motion.div>
+          </div>
+        </motion.div>
       </div>
+
+      {/* Edge Blending Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-[#030303]/80 pointer-events-none" />
     </div>
   );
 };

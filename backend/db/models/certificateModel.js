@@ -1,75 +1,78 @@
-import { Schema, model } from 'mongoose';
+import mongoose from "mongoose";
 
-const certificateSchema = new Schema({
-  student: {
-    type: Schema.Types.ObjectId,
-    ref: 'Student',
-    required: true
-  },
-  officeApprovals: [{
-    office: {
-      type: Schema.Types.ObjectId,
-      ref: 'Office',
-      required: true
+const certificateSchema = new mongoose.Schema(
+  {
+    studentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Student",
+      required: true,
+    },
+    officeApprovals: [
+      {
+        officeStaffId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Officer",
+          required: true,
+        },
+        department: {
+          type: String,
+          required: true,
+        },
+        status: {
+          type: String,
+          enum: ["PENDING", "Approved", "Rejected"],
+          default: "PENDING",
+        },
+        remarks: {
+          type: String,
+          default: "",
+        },
+        approvedAt: {
+          type: Date,
+        },
+      },
+    ],
+    type: {
+      type: String,
+      enum: ["NO_DUE"],
+      default: "NO_DUE",
     },
     status: {
       type: String,
-      enum: ['Pending', 'Approved', 'Rejected'],
-      default: 'Pending'
+      enum: ["PENDING", "PROCESSING", "Approved", "Rejected"],
+      default: "PENDING",
     },
-    remarks: {
+    purpose: {
       type: String,
-      default: ''
+      trim: true,
     },
-    approvedAt: {
-      type: Date
-    }
-  }],
-  isFullyApproved: {
-    type: Boolean,
-    default: false
+    totalRequiredApprovals: {
+      type: Number,
+      required: true,
+    },
+    certificateNumber: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    requestDate: {
+      type: Date,
+      default: Date.now,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  generatedAt: {
-    type: Date,
-    default: Date.now
-  },
-  expiresAt: {
-    type: Date
-  },
-  certificateNumber: {
-    type: String,
-    unique: true
-  },
-  status: {
-    type: String,
-    enum: ['In Progress', 'Issued', 'Rejected'],
-    default: 'In Progress'
-  }
-}, { timestamps: true });
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
+);
 
-// Generate unique certificate number
-certificateSchema.pre('save', function(next) {
-  if (!this.certificateNumber) {
-    const prefix = 'NDC';
-    const timestamp = Date.now().toString(36);
-    const randomStr = Math.random().toString(36).substring(2, 7);
-    this.certificateNumber = `${prefix}-${timestamp}-${randomStr}`.toUpperCase();
-  }
-  next();
+// Virtual to check if all approvals are complete
+certificateSchema.virtual("isFullyApproved").get(function () {
+  return (
+    this.officeApprovals.every((approval) => approval.status === "APPROVED") &&
+    this.officeApprovals.length === this.totalRequiredApprovals
+  );
 });
 
-// Check if all offices have approved
-certificateSchema.methods.checkFullApproval = function() {
-  this.isFullyApproved = this.officeApprovals.every(
-    approval => approval.status === 'Approved'
-  );
-  
-  if (this.isFullyApproved) {
-    this.status = 'Issued';
-    this.expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days validity
-  }
-  
-  return this.isFullyApproved;
-};
-
-export default model('Certificate', certificateSchema);
+export default mongoose.model("Certificate", certificateSchema);

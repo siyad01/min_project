@@ -13,6 +13,9 @@ const generateToken = (id, res) => {
       httpOnly: true,
       sameSite: 'strict', // 'lax' or 'none' might be used depending on your use case
     });
+
+    // Return the token for frontend
+    return token;
   } catch (error) {
     console.error('Error generating token:', error);
     throw new Error('Token generation failed');

@@ -13,11 +13,7 @@ export const AuthProvider = ({children}) => {
 
     async function registerStudent(formData) {
         try {
-            // Log FormData contents for debugging
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`);
-            }
-
+           
             // Add axios configuration for multipart form data
             const { data } = await axios.post("/api/auth/register-student", formData, {
                 headers: {
@@ -30,7 +26,6 @@ export const AuthProvider = ({children}) => {
             setIsAuth(true);
             setLoading(false);
             localStorage.setItem("authToken", data.token);
-            window.location.reload();
 
             return data;
         } catch (error) {
@@ -55,7 +50,6 @@ export const AuthProvider = ({children}) => {
     }
 
     async function registerOfficer(formData) {
-        console.log("registering officer");
         try {
             const { data } = await axios.post("/api/auth/register-officer", formData, {
                 headers: {
@@ -67,7 +61,6 @@ export const AuthProvider = ({children}) => {
             setIsAuth(true);
             setLoading(false);
             localStorage.setItem("authToken", data.token);
-            window.location.reload();
 
             return data;
         } catch (error) {
@@ -85,7 +78,6 @@ export const AuthProvider = ({children}) => {
             setIsAuth(true);
             setLoading(false);
             localStorage.setItem("authToken", data.token);
-            window.location.reload();
             return data;
         } catch (error) {
             toast.error(error.response?.data?.message || "Login failed");
@@ -101,7 +93,6 @@ export const AuthProvider = ({children}) => {
             setIsAuth(true);
             setLoading(false);
             localStorage.setItem("authToken", data.token);
-            window.location.reload();
             return data;
         } catch (error) {
             toast.error(error.response?.data?.message || "Login failed");
@@ -117,7 +108,6 @@ export const AuthProvider = ({children}) => {
             setIsAuth(true);
             setLoading(false);
             localStorage.setItem("authToken", data.token);
-            window.location.reload();
             return data;
         } catch (error) {
             toast.error(error.response?.data?.message || "Login failed");
@@ -132,10 +122,83 @@ export const AuthProvider = ({children}) => {
             setUser(null);
             setIsAuth(false);
             localStorage.removeItem("authToken");
+            
             setLoading(false);
         } catch (error) {
             toast.error(error.response?.data?.message || "Logout failed");
             setLoading(false);
+        }
+    }
+
+    async function updateStudentProfile(formData) {
+        try {
+            setLoading(true);
+            const { data } = await axios.put("/api/auth/update-student-profile", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            toast.success(data.message);
+            setUser(data.student);  // Update user in context
+            setLoading(false);
+            return data;
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Profile update failed");
+            setLoading(false);
+            throw error;
+        }
+    }
+
+    async function updateOfficerProfile(formData) {
+        try {
+            setLoading(true);
+            const { data } = await axios.put("/api/auth/update-officer-profile", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            toast.success(data.message);
+            setUser(data.officer);  // Update user in context
+            setLoading(false);
+            return data;
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Profile update failed");
+            setLoading(false);
+            throw error;
+        }
+    }
+
+    async function fetchStudentDetails() {
+        try {
+            setLoading(true);
+            const { data } = await axios.get("/api/auth/student-details");
+            
+            // Update user details in context
+            setUser(data.student);
+            setLoading(false);
+            return data.student;
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to fetch student details");
+            setLoading(false);
+            throw error;
+        }
+    }
+
+    async function fetchOfficerDetails() {
+        try {
+            setLoading(true);
+            const { data } = await axios.get("/api/auth/officer-details");
+            
+            // Update user details in context
+            setUser(data.officer);
+            setLoading(false);
+            return data.officer;
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to fetch officer details");
+            setLoading(false);
+            throw error;
         }
     }
 
@@ -152,6 +215,10 @@ export const AuthProvider = ({children}) => {
             loginOfficer,
             loginAdmin,
             logout,
+            updateStudentProfile,
+            updateOfficerProfile,
+            fetchStudentDetails,
+            fetchOfficerDetails,
             
         }}>
             {children}
