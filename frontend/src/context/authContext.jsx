@@ -78,7 +78,6 @@ export const AuthProvider = ({children}) => {
             setIsAuth(true);
             setLoading(false);
             localStorage.setItem("authToken", data.token);
-            window.location.reload();
             return data;
         } catch (error) {
             toast.error(error.response?.data?.message || "Login failed");
@@ -94,7 +93,6 @@ export const AuthProvider = ({children}) => {
             setIsAuth(true);
             setLoading(false);
             localStorage.setItem("authToken", data.token);
-            window.location.reload();
             return data;
         } catch (error) {
             toast.error(error.response?.data?.message || "Login failed");

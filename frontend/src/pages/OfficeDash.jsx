@@ -31,14 +31,14 @@ const OfficeDash = ({ user }) => {
   const [confirmDeleteDueId, setConfirmDeleteDueId] = useState(null);
 
   const { createDue, dues, fetchAllDues, setDueStatus, deleteDue } = DueData();
-  const { 
-    updateOfficerProfile, 
-    fetchOfficerDetails, 
-    loading: authLoading, 
-    isAuth
+  const {
+    updateOfficerProfile,
+    fetchOfficerDetails,
+    loading: authLoading,
+    isAuth,
   } = UserData();
 
-  const {fetchAllCertRequests, updateCertificateStatus} = CertificateData();
+  const { fetchAllCertRequests, updateCertificateStatus } = CertificateData();
   const fadeUpVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i) => ({
@@ -78,18 +78,18 @@ const OfficeDash = ({ user }) => {
 
   const handleProfileInputChange = (e) => {
     const { name, value } = e.target;
-    setEditedProfile(prev => ({
+    setEditedProfile((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-  
+
     // Only append changed fields
-    Object.keys(editedProfile).forEach(key => {
+    Object.keys(editedProfile).forEach((key) => {
       if (editedProfile[key] !== user[key]) {
         formData.append(key, editedProfile[key]);
       }
@@ -97,12 +97,11 @@ const OfficeDash = ({ user }) => {
 
     try {
       await updateOfficerProfile(formData);
-      
+
       setIsEditing(false);
       // Fetch updated officer details
       await fetchOfficerDetails();
       window.location.reload();
-      
     } catch (error) {
       console.error("Profile update failed", error);
     }
@@ -119,37 +118,42 @@ const OfficeDash = ({ user }) => {
 
   // Certificate Status Update State
   const [selectedCertificate, setSelectedCertificate] = useState(null);
-  const [certificateStatusModalOpen, setCertificateStatusModalOpen] = useState(false);
+  const [certificateStatusModalOpen, setCertificateStatusModalOpen] =
+    useState(false);
   const [certificateStatus, setCertificateStatus] = useState({
-    status: '',
-    remarks: ''
+    status: "",
+    remarks: "",
   });
 
   // Update Certificate Status Handler
   const handleUpdateCertificateStatus = async (e) => {
     e.preventDefault();
-    
+
     if (!selectedCertificate) return;
 
     try {
-      await updateCertificateStatus(selectedCertificate._id, {
-        status: certificateStatus.status,
-        remarks: certificateStatus.remarks
-      });
-      
-      // Update local state
-      const updatedRequests = certificateRequests.map(req => 
-        req._id === selectedCertificate._id 
-          ? { ...req, status: certificateStatus.status } 
-          : req
+      const updatedCertificate = await updateCertificateStatus(
+        selectedCertificate._id,
+        {
+          status: certificateStatus.status,
+          remarks: certificateStatus.remarks,
+        }
       );
-      setCertificateRequests(updatedRequests);
-      
+
+      // Fetch updated certificate requests to ensure latest data
+      const certificateData = await fetchAllCertRequests(user._id);
+      setCertificateRequests(certificateData.certificates);
+
       // Close modal
       setCertificateStatusModalOpen(false);
       setSelectedCertificate(null);
+      setCertificateStatus({
+        status: "",
+        remarks: "",
+      });
     } catch (error) {
       console.error("Failed to update certificate status", error);
+      // Optional: Add error toast or notification
     }
   };
 
@@ -158,7 +162,7 @@ const OfficeDash = ({ user }) => {
     setSelectedCertificate(request);
     setCertificateStatus({
       status: status,
-      remarks: ''
+      remarks: "",
     });
     setCertificateStatusModalOpen(true);
   };
@@ -245,12 +249,12 @@ const OfficeDash = ({ user }) => {
   };
 
   useEffect(() => {
-    if (isAuth ) {
+    if (isAuth) {
       const fetchCertificates = async () => {
         const certificateData = await fetchAllCertRequests(user._id);
         setCertificateRequests(certificateData.certificates);
       };
-      
+
       fetchAllDues();
       fetchCertificates();
     }
@@ -333,20 +337,22 @@ const OfficeDash = ({ user }) => {
             transition={{ duration: 0.5 }}
             className="bg-white/5 rounded-2xl backdrop-blur-sm border border-white/10 shadow-xl overflow-hidden mb-8"
           >
-            <div className="p-6 md:p-8">
-              <h2 className="text-2xl md:text-3xl font-semibold text-white mb-6">
+            <div className="p-4 sm:p-6 md:p-8">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-white mb-4 sm:mb-6">
                 Certificate Requests
               </h2>
-              <div className="overflow-x-auto text-md md:text-lg">
-                <table className="w-full text-left">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs sm:text-sm md:text-md">
                   <thead className="bg-white/10 text-white/70">
                     <tr>
-                      <th className="p-3">Student</th>
-                      <th className="p-3">Department</th>
-                      <th className="p-3">Date</th>
-                      <th className="p-3">Reason</th>
-                      <th className="p-3">Status</th>
-                      <th className="p-3">Actions</th>
+                      <th className="p-2 sm:p-3 hidden sm:table-cell">
+                        Student
+                      </th>
+                      <th className="p-2 sm:p-3">Department</th>
+                      <th className="p-2 sm:p-3 hidden md:table-cell">Date</th>
+                      <th className="p-2 sm:p-3">Reason</th>
+                      <th className="p-2 sm:p-3">Status</th>
+                      <th className="p-2 sm:p-3">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -355,27 +361,36 @@ const OfficeDash = ({ user }) => {
                         key={request?._id}
                         className="border-b border-white/10 hover:bg-white/5"
                       >
-                        <td className="p-3">{request?.studentId?.firstName} {request?.studentId?.lastName}</td>
-                        <td className="p-3">{request?.studentId?.department}</td>
-                        <td className="p-3">{request?.requestDate?.split('T')[0]}</td>
-                        <td className="p-3">{request?.purpose}</td>
-                        <td className="p-3">
+                        <td className="p-2 sm:p-3 hidden sm:table-cell">
+                          {request?.studentId?.firstName}{" "}
+                          {request?.studentId?.lastName}
+                        </td>
+                        <td className="p-2 sm:p-3">
+                          {request?.studentId?.department}
+                        </td>
+                        <td className="p-2 sm:p-3 hidden md:table-cell">
+                          {request?.requestDate?.split("T")[0]}
+                        </td>
+                        <td className="p-2 sm:p-3">{request?.purpose}</td>
+                        <td className="p-2 sm:p-3">
                           <span
-                            className={`px-3 py-1 rounded-full text-md md:text-lg ${getStatusColor(
+                            className={`px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm ${getStatusColor(
                               request?.status
                             )}`}
                           >
                             {request?.status}
                           </span>
                         </td>
-                        <td className="p-3 flex space-x-2">
+                        <td className="p-2 sm:p-3 flex space-x-1 sm:space-x-2">
                           {request?.status === "PENDING" && (
                             <>
                               <motion.button
                                 whileHover="hover"
                                 variants={buttonHoverVariants}
-                                onClick={() => openStatusUpdateModal(request, "Approved")}
-                                className="text-green-400 hover:text-green-500"
+                                onClick={() =>
+                                  openStatusUpdateModal(request, "Approved")
+                                }
+                                className="text-green-400 hover:text-green-500 text-sm sm:text-base"
                                 title="Approve Request"
                               >
                                 <FaCheck />
@@ -383,8 +398,10 @@ const OfficeDash = ({ user }) => {
                               <motion.button
                                 whileHover="hover"
                                 variants={buttonHoverVariants}
-                                onClick={() => openStatusUpdateModal(request, "Rejected")}
-                                className="text-red-400 hover:text-red-500"
+                                onClick={() =>
+                                  openStatusUpdateModal(request, "Rejected")
+                                }
+                                className="text-red-400 hover:text-red-500 text-sm sm:text-base"
                                 title="Reject Request"
                               >
                                 <FaTimes />
@@ -395,8 +412,10 @@ const OfficeDash = ({ user }) => {
                             <motion.button
                               whileHover="hover"
                               variants={buttonHoverVariants}
-                              onClick={() => openStatusUpdateModal(request, request?.status)}
-                              className="text-blue-400 hover:text-blue-500"
+                              onClick={() =>
+                                openStatusUpdateModal(request, request?.status)
+                              }
+                              className="text-blue-400 hover:text-blue-500 text-sm sm:text-base"
                               title="Update Status"
                             >
                               <FaEdit />
@@ -407,6 +426,11 @@ const OfficeDash = ({ user }) => {
                     ))}
                   </tbody>
                 </table>
+                {certificateRequests.length === 0 && (
+                  <p className="text-center text-white/60 p-4">
+                    No certificate requests found
+                  </p>
+                )}
               </div>
             </div>
           </motion.section>
@@ -490,7 +514,9 @@ const OfficeDash = ({ user }) => {
                       </motion.div>
                     ))
                   ) : (
-                    <p className="text-white/60 text-center text-sm sm:text-base">No dues found</p>
+                    <p className="text-white/60 text-center text-sm sm:text-base">
+                      No dues found
+                    </p>
                   )}
                 </div>
               </div>
@@ -524,9 +550,9 @@ const OfficeDash = ({ user }) => {
               {isEditing ? (
                 <form onSubmit={handleProfileUpdate} className="space-y-4">
                   {[
-                    { key: 'firstName', label: 'First Name' },
-                    { key: 'lastName', label: 'Last Name' },
-                    { key: 'email', label: 'Email' },
+                    { key: "firstName", label: "First Name" },
+                    { key: "lastName", label: "Last Name" },
+                    { key: "email", label: "Email" },
                   ].map((field, index) => (
                     <motion.div
                       key={field.key}
@@ -542,22 +568,26 @@ const OfficeDash = ({ user }) => {
                       <input
                         type="text"
                         name={field.key}
-                        value={editedProfile[field.key] || ''}
+                        value={editedProfile[field.key] || ""}
                         onChange={handleProfileInputChange}
                         className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-400/50 focus:outline-none text-white"
                       />
                     </motion.div>
                   ))}
                   <div className="flex justify-end space-x-3 pt-4">
-                    <button 
+                    <button
                       type="submit"
                       disabled={authLoading}
                       className={`
                         px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600/70 to-indigo-800/60 text-white font-medium
-                        ${authLoading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}
+                        ${
+                          authLoading
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:opacity-90"
+                        }
                       `}
                     >
-                      {authLoading ? 'Updating...' : 'Save Changes'}
+                      {authLoading ? "Updating..." : "Save Changes"}
                     </button>
                   </div>
                 </form>
@@ -696,7 +726,10 @@ const OfficeDash = ({ user }) => {
             <h2 className="text-2xl font-semibold text-white mb-6">
               Update Certificate Status
             </h2>
-            <form onSubmit={handleUpdateCertificateStatus} className="space-y-4">
+            <form
+              onSubmit={handleUpdateCertificateStatus}
+              className="space-y-4"
+            >
               <div>
                 <label className="block text-sm font-medium text-white/70 mb-2">
                   Status
