@@ -17,6 +17,11 @@ import connectMongo from './db/db.js';
 
 dotenv.config();
 
+// For ES modules, manually create __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 const app = express();
 
 // Middleware
