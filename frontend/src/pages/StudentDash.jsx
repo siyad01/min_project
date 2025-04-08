@@ -748,14 +748,10 @@ const StudentDash = ({ user }) => {
             >
               <button
                 onClick={handleRequestCertificate}
-                disabled={!purpose || certificateLoading}
+                disabled={!purpose}
                 className={`
                   px-6 py-2 rounded-lg transition-all 
-                  ${
-                    purpose && !certificateLoading
-                      ? "bg-gradient-to-r from-indigo-600/70 to-indigo-800/60 text-white hover:opacity-90"
-                      : "bg-white/10 text-white/50 cursor-not-allowed"
-                  }
+                  bg-gradient-to-r from-indigo-600/70 to-indigo-800/60 text-white hover:opacity-90
                 `}
               >
                 {certificateLoading ? (

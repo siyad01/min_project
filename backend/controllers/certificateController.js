@@ -122,7 +122,7 @@ export const fetchAllCertRequests = TryCatch(async (req, res) => {
    
 
     res.status(200).json({
-      certificates: allCertificates,
+      certificates: certificates,
       message: "Certificate requests fetched successfully",
     });
   } catch (error) {
