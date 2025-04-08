@@ -252,8 +252,9 @@ const OfficeDash = ({ user }) => {
   useEffect(() => {
     if (isAuth) {
       const fetchCertificates = async () => {
-        const certificateData = await fetchAllCertRequests(user._id);
-        setCertificateRequests(certificateData.certificates);
+        const certificateData = await fetchAllCertRequests(user?._id);
+
+        await setCertificateRequests(certificateData.certificates);
       };
 
       fetchAllDues();
@@ -342,106 +343,101 @@ const OfficeDash = ({ user }) => {
               <h2 className="text-2xl md:text-3xl font-semibold text-white mb-6">
                 Certificate Requests
               </h2>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm md:text-md">
-                  <thead className="bg-white/10 text-white/70">
-                    <tr>
-                      <th className="p-2 sm:p-3 hidden sm:table-cell text-sm md:text-lg">
-                        Student
-                      </th>
-                      <th className="p-2 sm:p-3 text-sm md:text-lg">Department</th>
-                      <th className="p-2 sm:p-3 hidden md:table-cell text-sm md:text-lg">Date</th>
-                      <th className="p-2 sm:p-3 text-sm md:text-lg">Reason</th>
-                      <th className="p-2 sm:p-3 text-sm md:text-lg">Status</th>
-                      <th className="p-2 sm:p-3 text-sm md:text-lg">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {certificateRequests.map((request) => (
-                      <tr
-                        key={request?._id}
-                        className="border-b border-white/10 hover:bg-white/5 text-sm md:text-base"
+              <div className="grid gap-4 md:gap-6">
+                {certificateRequests.map((request) => (
+                  <div
+                    key={request?._id}
+                    className="bg-white/5 rounded-xl border border-white/10 p-4 md:p-6 flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4"
+                  >
+                    <div className="flex flex-col items-center md:items-start w-full md:w-auto">
+                      <h3 className="text-lg md:text-xl font-semibold text-white mb-1">
+                        {request?.firstName} {request?.lastName}
+                      </h3>
+                      <p className="text-sm md:text-base text-white/70">
+                        {request?.studentId?.department}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col items-center md:items-start w-full md:w-auto">
+                      <h4 className="text-base md:text-lg font-medium text-white mb-1">
+                        {request?.purpose}
+                      </h4>
+                      <p className="text-sm text-white/70">
+                        Requested on: {request?.requestDate?.split("T")[0]}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center space-x-3">
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
+                          request?.status
+                        )}`}
                       >
-                        <td className="p-2 sm:p-3 hidden sm:table-cell text-sm md:text-base">
-                          {request?.studentId?.firstName}{" "}
-                          {request?.studentId?.lastName}
-                        </td>
-                        <td className="p-2 sm:p-3 text-sm md:text-base">
-                          {request?.studentId?.department}
-                        </td>
-                        <td className="p-2 sm:p-3 hidden md:table-cell text-sm md:text-base">
-                          {request?.requestDate?.split("T")[0]}
-                        </td>
-                        <td className="p-2 sm:p-3 text-sm md:text-base">{request?.purpose}</td>
-                        <td className="p-2 sm:p-3">
-                          <span
-                            className={`px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm ${getStatusColor(
-                              request?.status
-                            )}`}
-                          >
-                            {request?.status}
-                          </span>
-                        </td>
-                        <td className="p-2 sm:p-3 flex space-x-1 sm:space-x-2">
-                          {request?.status === "PENDING" && (
-                            <>
-                              <motion.button
-                                whileHover="hover"
-                                variants={buttonHoverVariants}
-                                onClick={() =>
-                                  openStatusUpdateModal(request, "Approved")
-                                }
-                                className="text-green-400 hover:text-green-500 text-sm md:text-base"
-                                title="Approve Request"
-                              >
-                                <FaCheck />
-                              </motion.button>
-                              <motion.button
-                                whileHover="hover"
-                                variants={buttonHoverVariants}
-                                onClick={() =>
-                                  openStatusUpdateModal(request, "Rejected")
-                                }
-                                className="text-red-400 hover:text-red-500 text-sm md:text-base"
-                                title="Reject Request"
-                              >
-                                <FaTimes />
-                              </motion.button>
-                            </>
-                          )}
-                          {request?.status === "PROCESSING" && (
+                        {request?.status}
+                      </span>
+
+                      <div className="flex space-x-2">
+                        {request?.status === "PENDING" && (
+                          <>
                             <motion.button
                               whileHover="hover"
                               variants={buttonHoverVariants}
                               onClick={() =>
-                                openStatusUpdateModal(request, request?.status)
+                                openStatusUpdateModal(request, "Approved")
                               }
-                              className="text-blue-400 hover:text-blue-500 text-sm md:text-base"
-                              title="Update Status"
+                              className="text-green-400 hover:text-green-500 text-lg"
+                              title="Approve Request"
                             >
-                              <FaEdit />
+                              <FaCheck />
                             </motion.button>
-                          )}
-                          {(request?.status === "APPROVED" ||
-                            request?.status === "REJECTED") && (
                             <motion.button
                               whileHover="hover"
                               variants={buttonHoverVariants}
-                              className="text-gray-400 hover:text-gray-500 text-sm md:text-base"
-                              title="Status already updated"
+                              onClick={() =>
+                                openStatusUpdateModal(request, "Rejected")
+                              }
+                              className="text-red-400 hover:text-red-500 text-lg"
+                              title="Reject Request"
                             >
-                              <FaLock />
+                              <FaTimes />
                             </motion.button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                          </>
+                        )}
+                        {request?.status === "PROCESSING" && (
+                          <motion.button
+                            whileHover="hover"
+                            variants={buttonHoverVariants}
+                            onClick={() =>
+                              openStatusUpdateModal(request, request?.status)
+                            }
+                            className="text-blue-400 hover:text-blue-500 text-lg"
+                            title="Update Status"
+                          >
+                            <FaEdit />
+                          </motion.button>
+                        )}
+                        {(request?.status === "APPROVED" ||
+                          request?.status === "REJECTED") && (
+                          <motion.button
+                            whileHover="hover"
+                            variants={buttonHoverVariants}
+                            className="text-gray-400 hover:text-gray-500 text-lg"
+                            title="Status already updated"
+                          >
+                            <FaLock />
+                          </motion.button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
                 {certificateRequests.length === 0 && (
-                  <p className="text-center text-white/60 p-4 text-sm md:text-base">
-                    No certificate requests found
-                  </p>
+                  <div className="text-center bg-white/5 rounded-xl p-6">
+                    <p className="text-white/60 text-base md:text-lg">
+                      No certificate requests found
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
@@ -481,45 +477,55 @@ const OfficeDash = ({ user }) => {
                         variants={fadeUpVariants}
                         initial="hidden"
                         animate="visible"
-                        className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white/10 p-3 sm:p-4 rounded-xl space-y-2 sm:space-y-0"
+                        className="bg-white/5 rounded-xl border border-white/10 p-4 md:p-6 flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4"
                       >
-                        <div className="text-sm md:text-base w-full sm:w-auto">
-                          <span className="font-medium text-white block sm:inline text-sm md:text-base">
+                        <div className="flex flex-col items-center md:items-start w-full md:w-auto">
+                          <h3 className="text-lg md:text-xl font-semibold text-white mb-1">
                             {due?.studentName}
-                          </span>
-                          <span className="block text-xs sm:text-sm md:text-base text-white/60 sm:ml-2">
+                          </h3>
+                          <p className="text-sm md:text-base text-white/70">
                             {due?.department} - {due?.description}
-                          </span>
+                          </p>
                         </div>
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
-                          <div className="flex items-center justify-between w-full sm:w-auto">
-                            <span className="font-bold text-white text-sm md:text-base mr-2 sm:mr-0">
-                              ₹{due?.amount}
-                            </span>
-                            <span
-                              className={`px-2 py-1 rounded-full text-xs sm:text-sm ${getStatusColor(
-                                due?.status
-                              )}`}
-                            >
-                              {due?.status}
-                            </span>
-                          </div>
-                          <div className="flex space-x-2 w-full sm:w-auto">
+
+                        <div className="flex flex-col items-center md:items-start w-full md:w-auto">
+                          <h4 className="text-base md:text-lg font-medium text-white mb-1">
+                            Amount Due
+                          </h4>
+                          <p className="text-lg md:text-xl font-bold text-white">
+                            ₹{due?.amount}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center space-x-3">
+                          <span
+                            className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
+                              due?.status
+                            )}`}
+                          >
+                            {due?.status}
+                          </span>
+
+                          <div className="flex space-x-2">
                             {due?.status !== "Paid" && (
-                              <button
+                              <motion.button
+                                whileHover="hover"
+                                variants={buttonHoverVariants}
                                 onClick={() => handleSetDueStatus(due?._id)}
-                                className="px-2 py-1 sm:px-3 sm:py-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition text-xs sm:text-sm"
+                                className="px-3 py-1 bg-green-500 text-white rounded-full hover:bg-green-600 transition text-sm md:text-base"
                               >
                                 Mark as Paid
-                              </button>
+                              </motion.button>
                             )}
                             {due.status === "Paid" && (
-                              <button
+                              <motion.button
+                                whileHover="hover"
+                                variants={buttonHoverVariants}
                                 onClick={() => setConfirmDeleteDueId(due._id)}
-                                className="px-2 py-1 sm:px-3 sm:py-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition text-xs sm:text-sm"
+                                className="px-3 py-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition text-sm md:text-base"
                               >
                                 Delete
-                              </button>
+                              </motion.button>
                             )}
                           </div>
                         </div>

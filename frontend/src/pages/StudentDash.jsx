@@ -15,8 +15,7 @@ import { DueData } from "../context/dueContext";
 import { UserData } from "../context/authContext";
 import { CertificateData } from "../context/certificateContext";
 import { InfoIcon, X } from "lucide-react";
-import { Loading } from "../components/Loading";
-import axios from 'axios';
+import axios from "axios";
 
 const pacifico = {
   style: {
@@ -74,9 +73,19 @@ const StudentDash = ({ user }) => {
   const [certificateLoading, setCertificateLoading] = useState(false);
   const [certificateError, setCertificateError] = useState(null);
 
-  const { updateStudentProfile, fetchStudentDetails, loading: authLoading, isAuth, user: userData } = UserData();
+  const {
+    updateStudentProfile,
+    fetchStudentDetails,
+    loading: authLoading,
+    isAuth,
+  } = UserData();
   const { dues, fetchStudentDues, loading, requestCashPayment } = DueData();
-  const { createCertificate, certificates, fetchAllMyCertRequests, deleteCertificateRequest } = CertificateData();
+  const {
+    createCertificate,
+    certificates,
+    fetchAllMyCertRequests,
+    deleteCertificateRequest,
+  } = CertificateData();
   const fadeUpVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i) => ({
@@ -119,21 +128,21 @@ const StudentDash = ({ user }) => {
 
     try {
       const certificateFormData = new FormData();
-      certificateFormData.append("studentId", userData?._id);
+      certificateFormData.append("studentId", user?._id);
       certificateFormData.append("purpose", purpose);
 
       await createCertificate(certificateFormData);
-      
+
       setShowCertificateModal(false);
       setPurpose("");
-      
+
       // Refresh certificate requests
-      await fetchAllMyCertRequests(userData?._id);
+      await fetchAllMyCertRequests(user?._id);
     } catch (error) {
       console.error("Certificate request failed", error);
       setCertificateError(
-        error.response?.data?.message || 
-        "Failed to submit certificate request. Please try again."
+        error.response?.data?.message ||
+          "Failed to submit certificate request. Please try again."
       );
     } finally {
       setCertificateLoading(false);
@@ -148,29 +157,29 @@ const StudentDash = ({ user }) => {
   };
 
   const studentProfile = {
-    name: `${userData?.firstName} ${userData?.lastName}`,
-    email: userData?.email,
-    department: userData?.department,
-    semester: userData?.semester,
-    admissionNo: userData?.admissionNo,
-    contactNo: userData?.phone,
+    name: `${user?.firstName} ${user?.lastName}`,
+    email: user?.email,
+    department: user?.department,
+    semester: user?.semester,
+    admissionNo: user?.admissionNo,
+    contactNo: user?.phone,
   };
 
   const [editedProfile, setEditedProfile] = useState({
-    firstName: userData?.firstName,
-    lastName: userData?.lastName,
-    email: userData?.email,
-    phone: userData?.phone,
-    semester: userData?.semester,
+    firstName: user?.firstName,
+    lastName: user?.lastName,
+    email: user?.email,
+    phone: user?.phone,
+    semester: user?.semester,
   });
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-  
+
     // Only append changed fields
-    Object.keys(editedProfile).forEach(key => {
-      if (editedProfile[key] !== userData[key]) {
+    Object.keys(editedProfile).forEach((key) => {
+      if (editedProfile[key] !== user[key]) {
         formData.append(key, editedProfile[key]);
       }
     });
@@ -182,7 +191,6 @@ const StudentDash = ({ user }) => {
       // Fetch updated student details
       await fetchStudentDetails();
       window.location.reload();
-      
     } catch (error) {
       console.error("Profile update failed", error);
     }
@@ -190,9 +198,9 @@ const StudentDash = ({ user }) => {
 
   const handleProfileInputChange = (e) => {
     const { name, value } = e.target;
-    setEditedProfile(prev => ({
+    setEditedProfile((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -207,18 +215,23 @@ const StudentDash = ({ user }) => {
 
   const handleDownloadCertificate = async (certificateId) => {
     try {
-      const response = await axios.get(`/api/certificates/${certificateId}/download-pdf`, {
-        responseType: 'blob', // Important for handling binary data
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming token-based auth
+      const response = await axios.get(
+        `/api/certificates/${certificateId}/download-pdf`,
+        {
+          responseType: "blob", // Important for handling binary data
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming token-based auth
+          },
         }
-      });
+      );
 
       // Create a blob URL and trigger download
-      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-      const link = document.createElement('a');
+      const url = window.URL.createObjectURL(
+        new Blob([response.data], { type: "application/pdf" })
+      );
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', `no_dues_certificate_${certificateId}.pdf`);
+      link.setAttribute("download", `no_dues_certificate_${certificateId}.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -226,8 +239,8 @@ const StudentDash = ({ user }) => {
       console.error("Failed to download certificate", error);
       // Show user-friendly error message
       alert(
-        error.response?.data?.message || 
-        "Failed to download certificate. Please ensure the certificate is approved."
+        error.response?.data?.message ||
+          "Failed to download certificate. Please ensure the certificate is approved."
       );
     }
   };
@@ -255,13 +268,13 @@ const StudentDash = ({ user }) => {
               Student Dashboard
             </h1>
             <p className="text-white/60 mt-2 text-xl md:text-2xl">
-              Welcome back, {userData?.firstName}
+              Welcome back, {user?.firstName}
             </p>
           </div>
           <div className="flex items-center space-x-2 mt-4 md:mt-0">
             <FaUserGraduate className="text-2xl text-indigo-400" />
             <span className="text-md md:text-lg bg-white/10 px-3 py-1 rounded-full">
-              {userData?.department} - Sem {userData?.semester}
+              {user?.department} - Sem {user?.semester}
             </span>
           </div>
         </motion.div>
@@ -315,9 +328,10 @@ const StudentDash = ({ user }) => {
                   <FaCertificate className="text-yellow-400" />
                   Certificate Requests
                 </h2>
-                <button 
-                onClick={() => setShowCertificateModal(true)}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600/70 to-indigo-800/60 text-white font-medium text-md">
+                <button
+                  onClick={() => setShowCertificateModal(true)}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600/70 to-indigo-800/60 text-white font-medium text-md"
+                >
                   New Request
                 </button>
               </div>
@@ -335,9 +349,12 @@ const StudentDash = ({ user }) => {
                     >
                       <div className="flex justify-between items-center text-md md:text-lg">
                         <div>
-                          <h3 className="font-medium text-xl">{cert.purpose}</h3>
+                          <h3 className="font-medium text-xl">
+                            {cert?.purpose}
+                          </h3>
                           <p className=" text-white/60 mt-1">
-                            Requested on: {cert?.requestDate?.split('T')[0]} • Status:
+                            Requested on: {cert?.requestDate?.split("T")[0]} •
+                            Status:
                             <span
                               className={cn("ml-2", {
                                 "text-yellow-400": cert?.status === "Pending",
@@ -350,16 +367,20 @@ const StudentDash = ({ user }) => {
                         </div>
                         <div className="flex space-x-2">
                           {cert?.status === "Approved" && (
-                            <button 
-                            type="button"
-                            onClick={() => handleDownloadCertificate(cert._id)}
-                            className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleDownloadCertificate(cert._id)
+                              }
+                              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
+                            >
                               <FaDownload className="text-green-400" />
                             </button>
                           )}
-                          <button 
-                          onClick={() => setSelectedCertificate(cert)}
-                          className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
+                          <button
+                            onClick={() => setSelectedCertificate(cert)}
+                            className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
+                          >
                             <FaChevronRight className="text-white/80" />
                           </button>
                         </div>
@@ -379,7 +400,6 @@ const StudentDash = ({ user }) => {
                   <p className="text-white/60">
                     You have no certificate requests yet.
                   </p>
-                 
                 </motion.div>
               )}
             </div>
@@ -486,11 +506,11 @@ const StudentDash = ({ user }) => {
               {isEditing ? (
                 <form onSubmit={handleProfileUpdate} className="space-y-4">
                   {[
-                    { key: 'firstName', label: 'First Name' },
-                    { key: 'lastName', label: 'Last Name' },
-                    { key: 'email', label: 'Email' },
-                    { key: 'phone', label: 'Contact Number' },
-                    { key: 'semester', label: 'Semester' },
+                    { key: "firstName", label: "First Name" },
+                    { key: "lastName", label: "Last Name" },
+                    { key: "email", label: "Email" },
+                    { key: "phone", label: "Contact Number" },
+                    { key: "semester", label: "Semester" },
                   ].map((field, index) => (
                     <motion.div
                       key={field.key}
@@ -506,29 +526,33 @@ const StudentDash = ({ user }) => {
                       <input
                         type="text"
                         name={field.key}
-                        value={editedProfile[field.key] || ''}
+                        value={editedProfile[field.key] || ""}
                         onChange={handleProfileInputChange}
                         className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:ring-2 focus:ring-indigo-400/50 focus:outline-none text-white"
                       />
                     </motion.div>
                   ))}
                   <div className="flex justify-end space-x-3 pt-4">
-                    <button 
+                    <button
                       type="button"
                       onClick={() => setIsEditing(false)}
                       className="px-4 py-2 rounded-xl border border-white/10 text-white hover:bg-white/5 transition"
                     >
                       Cancel
                     </button>
-                    <button 
+                    <button
                       type="submit"
                       disabled={authLoading}
                       className={`
                         px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600/70 to-indigo-800/60 text-white font-medium
-                        ${authLoading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}
+                        ${
+                          authLoading
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:opacity-90"
+                        }
                       `}
                     >
-                      {authLoading ? 'Updating...' : 'Save Changes'}
+                      {authLoading ? "Updating..." : "Save Changes"}
                     </button>
                   </div>
                 </form>
@@ -618,17 +642,23 @@ const StudentDash = ({ user }) => {
 
             <div className="space-y-4 text-white">
               <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <p className="text-sm text-white/70 uppercase tracking-wider">Purpose</p>
+                <p className="text-sm text-white/70 uppercase tracking-wider">
+                  Purpose
+                </p>
                 <p className="text-lg mt-1">{selectedCertificate.purpose}</p>
               </div>
 
               <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <p className="text-sm text-white/70 uppercase tracking-wider">Status</p>
-                <p 
+                <p className="text-sm text-white/70 uppercase tracking-wider">
+                  Status
+                </p>
+                <p
                   className={cn("text-lg mt-1", {
-                    "text-yellow-400": selectedCertificate?.status === "PENDING",
-                    "text-green-400": selectedCertificate?.status === "APPROVED",
-                    "text-red-400": selectedCertificate?.status === "REJECTED"
+                    "text-yellow-400":
+                      selectedCertificate?.status === "PENDING",
+                    "text-green-400":
+                      selectedCertificate?.status === "APPROVED",
+                    "text-red-400": selectedCertificate?.status === "REJECTED",
                   })}
                 >
                   {selectedCertificate.status}
@@ -636,17 +666,24 @@ const StudentDash = ({ user }) => {
               </div>
 
               <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-                <p className="text-sm text-white/70 uppercase tracking-wider">Request Date</p>
+                <p className="text-sm text-white/70 uppercase tracking-wider">
+                  Request Date
+                </p>
                 <p className="text-lg mt-1">
-                  {new Date(selectedCertificate.requestDate).toLocaleDateString()}
+                  {new Date(
+                    selectedCertificate.requestDate
+                  ).toLocaleDateString()}
                 </p>
               </div>
 
               {selectedCertificate.status === "REJECTED" && (
                 <div className="bg-red-500/10 p-4 rounded-xl border border-red-500/20">
-                  <p className="text-sm text-white/70 uppercase tracking-wider">Rejection Reason</p>
+                  <p className="text-sm text-white/70 uppercase tracking-wider">
+                    Rejection Reason
+                  </p>
                   <p className="text-lg mt-1 text-red-300">
-                    {selectedCertificate.rejectionReason || "No specific reason provided"}
+                    {selectedCertificate.rejectionReason ||
+                      "No specific reason provided"}
                   </p>
                 </div>
               )}
@@ -660,13 +697,14 @@ const StudentDash = ({ user }) => {
             >
               {selectedCertificate.status === "PENDING" && (
                 <button
-                  onClick={() => handleDeleteCertificateRequest(selectedCertificate._id)}
+                  onClick={() =>
+                    handleDeleteCertificateRequest(selectedCertificate._id)
+                  }
                   className="px-6 py-2 rounded-lg bg-red-600/70 text-white hover:bg-red-700 transition-colors"
                 >
                   Delete Request
                 </button>
               )}
-             
             </motion.div>
           </motion.div>
         </motion.div>
@@ -725,7 +763,8 @@ const StudentDash = ({ user }) => {
               >
                 <InfoIcon className="text-blue-400 mr-3" size={20} />
                 <p className="text-white/70 text-sm">
-                  Ensure all your dues are cleared before requesting the certificate.
+                  Ensure all your dues are cleared before requesting the
+                  certificate.
                 </p>
               </motion.div>
             </div>
@@ -748,17 +787,13 @@ const StudentDash = ({ user }) => {
             >
               <button
                 onClick={handleRequestCertificate}
-                disabled={!purpose}
+                disabled={!purpose || certificateLoading}
                 className={`
                   px-6 py-2 rounded-lg transition-all 
                   bg-gradient-to-r from-indigo-600/70 to-indigo-800/60 text-white hover:opacity-90
                 `}
               >
-                {certificateLoading ? (
-                  <Loading size="sm" className="mx-auto" />
-                ) : (
-                  "Request Certificate"
-                )}
+                {certificateLoading ? "Processing..." : "Request Certificate"}
               </button>
             </motion.div>
           </motion.div>

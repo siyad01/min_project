@@ -5,7 +5,6 @@ import Due from "../db/models/dueModel.js";
 import { Officer } from "../db/models/officeModel.js";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
-
 export const createCertificate = TryCatch(async (req, res) => {
   const { studentId, purpose } = req.body;
 
@@ -56,8 +55,6 @@ export const createCertificate = TryCatch(async (req, res) => {
     }
   }
 
- 
-
   // Ensure at least one approval exists
   if (officeApprovals.length === 0) {
     return res.status(400).json({
@@ -95,7 +92,6 @@ export const fetchAllMyCertificates = TryCatch(async (req, res) => {
 export const fetchAllCertRequests = TryCatch(async (req, res) => {
   const { officerId } = req.params;
 
-
   try {
     // First, verify the officer exists and log their details
     const officer = await Officer.findById(officerId);
@@ -103,7 +99,6 @@ export const fetchAllCertRequests = TryCatch(async (req, res) => {
       return res.status(404).json({ message: "Officer not found" });
     }
 
-   
 
     // Find all certificates and log for debugging
     const allCertificates = await Certificate.find({}).populate({
@@ -111,15 +106,22 @@ export const fetchAllCertRequests = TryCatch(async (req, res) => {
       select: "firstName lastName department",
     });
 
+    // Transform certificates to include student details at the top level
+    const transformedCertificates = allCertificates.map(cert => ({
+      ...cert.toObject(),
+      firstName: cert.studentId?.firstName,
+      lastName: cert.studentId?.lastName,
+      studentDepartment: cert.studentId?.department,
+      studentEmail: cert.studentId?.email
+    }));
 
     // Filter certificates where the officer's department is in office approvals
-    const certificates = allCertificates.filter((cert) =>
+    const certificates = transformedCertificates.filter((cert) =>
       cert.officeApprovals.some(
         (approval) => approval.department === officer.department
       )
     );
 
-   
 
     res.status(200).json({
       certificates: certificates,
@@ -213,8 +215,6 @@ export const updateCertificateStatus = TryCatch(async (req, res) => {
 
   // Save the updated certificate
   await certificate.save();
-
- 
 
   res.status(200).json({
     message: `Certificate status updated for ${officer.department}`,

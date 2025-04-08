@@ -64,24 +64,21 @@ export const CertificateProvider = ({ children }) => {
   }
 
   async function fetchAllCertRequests(officerId) {
-    
     try {
       const { data } = await axios.get(`/api/certificates/all/${officerId}`);
       
-      
-      // Transform certificates to include necessary details
-      
-
+     
       setCertificates(data.certificates);
       setLoading(false);
       return data;
     } catch (error) {
+      console.error("Error in fetchAllCertRequests:", error);
       toast.error(
         error.response?.data?.message || "Failed to fetch certificate requests"
       );
       console.error("Certificate fetch error:", error);
       setLoading(false);
-      return [];
+      return { certificates: [] };
     }
   }
 
